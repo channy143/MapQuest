@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
+import 'screens/mode_selection_screen.dart';
 
 /// The root widget of the GeoQuest Philippines app.
 ///
@@ -17,6 +18,9 @@ class GeoQuestApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
+      routes: {
+        '/mode-selection': (context) => const ModeSelectionScreen(),
+      },
       home: const HomeScreen(),
     );
   }

@@ -32,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   static final Cubic _fastStartSlowEnd = Cubic(0.25, 0.1, 0.25, 1.0);
 
+  bool _outroStarted = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +73,19 @@ class _HomeScreenState extends State<HomeScreen>
     _introController.dispose();
     _buttonsController.dispose();
     super.dispose();
+  }
+
+  void _playOutro() {
+    if (_outroStarted) return;
+    _outroStarted = true;
+
+    _buttonsController.reverse().then((_) {
+      _introController.reverse().then((_) {
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/mode-selection');
+        }
+      });
+    });
   }
 
   @override
@@ -146,25 +161,15 @@ class _HomeScreenState extends State<HomeScreen>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              'LARO',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Jomhuria',
-                                fontSize: 30,
-                                color: Colors.white,
-                                height: 0.9,
-                              ),
+                            _HoverButton(
+                              label: 'LARO',
+                              highlightColor: const Color(0xFF0C27DA),
+                              onTap: _playOutro,
                             ),
-                            Text(
-                              'MGA SETTING',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Jomhuria',
-                                fontSize: 30,
-                                color: Colors.white,
-                                height: 0.9,
-                              ),
+                            const SizedBox(height: 6),
+                            _HoverButton(
+                              label: 'MGA SETTING',
+                              highlightColor: const Color(0xFF0C27DA),
                             ),
                           ],
                         ),
@@ -172,33 +177,87 @@ class _HomeScreenState extends State<HomeScreen>
                     ],
                   ),
                 ),
-                AnimatedBuilder(
-                  animation: _introController,
-                  builder: (context, child) {
-                    return Positioned.fill(
-                      child: Transform.translate(
-                        offset: Offset(0, 200 + _earthSlideAnimation.value * (screenHeight * 0.5 + earthSize * 0.5)),
-                        child: Center(
-                          child: Transform.scale(
-                            scale: isCompact ? 1.35 : 1.0,
-                            child: RotationTransition(
-                              turns: _spinController,
-                              child: Image.asset(
-                                'assets/images/Earth.png',
-                                width: earthSize,
-                                height: earthSize,
-                                fit: BoxFit.contain,
+                IgnorePointer(
+                  child: AnimatedBuilder(
+                    animation: _introController,
+                    builder: (context, child) {
+                      return Positioned.fill(
+                        child: Transform.translate(
+                          offset: Offset(0, 200 + _earthSlideAnimation.value * (screenHeight * 0.5 + earthSize * 0.5)),
+                          child: Center(
+                            child: Transform.scale(
+                              scale: isCompact ? 1.35 : 1.0,
+                              child: RotationTransition(
+                                turns: _spinController,
+                                child: Image.asset(
+                                  'assets/images/Earth.png',
+                                  width: earthSize,
+                                  height: earthSize,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+/// A hoverable menu button that reveals a square background and turns the
+/// label text blue (matching the app's home screen background) on hover.
+class _HoverButton extends StatefulWidget {
+  const _HoverButton({
+    required this.label,
+    required this.highlightColor,
+    this.onTap,
+  });
+
+  final String label;
+  final Color highlightColor;
+  final VoidCallback? onTap;
+
+  @override
+  State<_HoverButton> createState() => _HoverButtonState();
+}
+
+class _HoverButtonState extends State<_HoverButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+          decoration: BoxDecoration(
+            color: _hovered ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(
+            widget.label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Jomhuria',
+              fontSize: 34,
+              color: _hovered ? widget.highlightColor : Colors.white,
+              height: 0.9,
+            ),
+          ),
         ),
       ),
     );
