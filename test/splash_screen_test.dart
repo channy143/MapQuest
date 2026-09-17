@@ -4,7 +4,7 @@ import 'package:geoquest_philippines/screens/splash_screen.dart';
 
 void main() {
   group('SplashScreen Widget Tests', () {
-    testWidgets('Renders splash art, "Please w8....loading core assets", and vertical progress bar',
+    testWidgets('Renders splash art, "Please wait....loading core assets", and vertical progress bar',
         (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1280, 800);
       tester.view.devicePixelRatio = 1.0;
@@ -28,7 +28,7 @@ void main() {
       expect(find.text('QUEST'), findsOneWidget);
 
       // Verify required loading message
-      expect(find.text('Please w8....loading core assets'), findsOneWidget);
+      expect(find.text('Please wait....loading core assets'), findsOneWidget);
 
       // Verify progress bar is rendered
       expect(find.byType(FractionallySizedBox), findsWidgets);

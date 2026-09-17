@@ -240,7 +240,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ),
                         child: Text(
-                          'Please w8....loading core assets',
+                          'Please wait....loading core assets',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isCompact ? 14 : 16,
