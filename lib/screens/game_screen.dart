@@ -131,6 +131,7 @@ class _GameScreenState extends State<GameScreen>
   bool _renderMap = false;
   MapLocation? _selectedLocation;
   CategoryFilter _selectedCategory = CategoryFilter.lahat;
+  bool _showMapGrid = true;
 
   // Coordinate Quest Mode state
   Set<String> _unlockedLocationIds = {};
@@ -168,7 +169,7 @@ class _GameScreenState extends State<GameScreen>
       category: 'PANGUNAHING PULO NG PILIPINAS',
       geoCategory: GeoCategory.pilipinas,
       description:
-          'Ang Luzon ang pinakamalaking isla sa Pilipinas. Dito matatagpuan ang Maynila na kabisera ng ating bansa.',
+          'Ang Luzon ang pinakamalaki at pinakamataong pulo sa Pilipinas, matatagpuan sa hilagang bahagi ng kapuluan. Dito natatagpuan ang Maynila (pambansang kabisera o capital).',
       funFact:
           'Alam mo ba? Dito matatagpuan ang Bulkang Taal na isa sa pinakamaliliit na aktibong bulkan sa buong mundo!',
       coordinates: '16.6° H Latitud, 121.3° S Longhitud',
@@ -178,7 +179,7 @@ class _GameScreenState extends State<GameScreen>
     ),
     MapLocation(
       id: 'visayas',
-      title: 'Kabisayaan (Visayas)',
+      title: 'Visayas',
       category: 'PANGUNAHING PULO NG PILIPINAS',
       geoCategory: GeoCategory.pilipinas,
       description:
@@ -196,9 +197,9 @@ class _GameScreenState extends State<GameScreen>
       category: 'PANGUNAHING PULO NG PILIPINAS',
       geoCategory: GeoCategory.pilipinas,
       description:
-          'Ang Mindanao ang pangalawa sa pinakamalaking isla sa timog ng Pilipinas. Kilala ito sa matatabang lupain at masasarap na prutas tulad ng pinya at saging.',
+          'Ang Mindanao sa pinakamalaking kapuluan sa Pilipinas na matatagpuan sa Timog na bahagi ng bansa.',
       funFact:
-          'Alam mo ba? Sa Mindanao matatagpuan ang Bundok Apo na pinakamataas na bundok sa Pilipinas!',
+          'Alam mo ba? Tinatawag na "Kamalig ng Pilipinas" ang Mindanao dahil sa masaganang ani ng pagkain at prutas. Dito rin matatagpuan ang Philippine Eagle na pambansang ibon at isa sa pinakamalaking agila sa mundo!',
       coordinates: '7.9° H Latitud, 125.1° S Longhitud',
       normalizedX: 0.680,
       normalizedY: 0.575,
@@ -240,9 +241,9 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA HILAGA (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Taiwan ang pinakamalapit na karatig-bansa sa hilaga ng Pilipinas. Malapit lamang ito sa lalawigan ng Batanes.',
+          'Ang Taiwan ay ang pinakamalapit na karatig-bansa na matatagpuan sa Hilaga ng Pilipinas.',
       funFact:
-          'Alam mo ba? Sa sobrang lapit nito sa Batanes, naririnig minsan doon ang radyo mula sa Taiwan!',
+          'Alam mo ba na tumutugtog ng classical music ang mga truck ng basura para malaman ng mga tao na oras na para magtapon ng basura. Ang hugis ng Taiwan sa mapa ay parang isang kamote!',
       coordinates: '23.7° H Latitud, 121.0° S Longhitud',
       normalizedX: 0.670,
       normalizedY: 0.300,
@@ -250,13 +251,13 @@ class _GameScreenState extends State<GameScreen>
     ),
     MapLocation(
       id: 'china',
-      title: 'Tsina (China)',
+      title: 'China',
       category: 'KARATIG-BANSA SA HILAGANG-KANLURAN (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Tsina ay isang napakalaking bansa sa hilagang-kanluran ng Pilipinas. Isa ito sa mga pinakalumang bansa na may mahabang kasaysayan.',
+          'Ang China ay isang napakalaking bansa sa hilagang-kanluran ng Pilipinas na may pinakamalaking populasyon sa Asya.',
       funFact:
-          'Alam mo ba? Sa Tsina unang naimbento ang papel, kompas, at paputok!',
+          'Alam mo ba na mga Giant Panda ay matatagpuan lamang sa kagubatan ng China sa ligaw na kalikasan (wild). Lahat ng mga panda sa iba\'t ibang bansa ay hiram lamang mula sa pamahalaan ng China upang alagaan at protektahan. Sobra silang mahilig kumain na kaya nilang umubos ng bamboo sa loob ng 12 oras kada araw.',
       coordinates: '35.9° H Latitud, 104.2° S Longhitud',
       normalizedX: 0.340,
       normalizedY: 0.160,
@@ -264,13 +265,13 @@ class _GameScreenState extends State<GameScreen>
     ),
     MapLocation(
       id: 'japan',
-      title: 'Hapon (Japan)',
+      title: 'Japan',
       category: 'KARATIG-BANSA SA HILAGANG-SILANGAN (INSULAR)',
       geoCategory: GeoCategory.insular,
       description:
-          'Ang Hapon ay isang bansang binubuo ng libu-libong isla sa hilagang-silangan ng Pilipinas. Kilala ito bilang Lupain ng Sumisikat na Araw.',
+          'Ang Japan ay matatagpuan sa hilagang-silangan ng Pilipinas, sa rehiyon ng Silangang Asya.',
       funFact:
-          'Alam mo ba? Ang sikat na Bundok Fuji sa Hapon ay isang magandang bulkan na may yelo sa tuktok!',
+          'Alam mo ba na ang Japan ay kilala bilang "Land of the Rising Sun". Kung titingnan mo ang kanilang bandila, ang pulang bilog sa gitna ay sumisimbolo sa araw.',
       coordinates: '36.2° H Latitud, 138.3° S Longhitud',
       normalizedX: 0.820,
       normalizedY: 0.130,
@@ -282,7 +283,7 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA KANLURAN (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Vietnam ay isang bansa sa kanluran ng Pilipinas patawid sa dagat. Hugis titik "S" ang anyo ng bansang ito sa mapa.',
+          'Ang Vietnam ay matatagpuan sa Kanluran ng Pilipinas. Hugis titik “S” ang mapa nito na may mahabang baybaying nakaharap sa ating kapuluan.',
       funFact:
           'Alam mo ba? Sa Vietnam matatagpuan ang pinakamalaking kuweba sa buong mundo na may sariling gubat sa loob!',
       coordinates: '14.1° H Latitud, 108.3° S Longhitud',
@@ -296,9 +297,9 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA KANLURAN (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Thailand ay isang masayang bansa sa kanluran ng Pilipinas. Tanyag ito sa magagandang templo at masasarap na pagkain.',
+          'Ang Thailand ay matatagpuan sa Kanluran ng Pilipinas. Pinapalibutan ito ng Vietnam, Cambodia, Laos, at Myanmar. Sentro ito ng agrikultura at Budismo (Buddhism) na relihiyon.',
       funFact:
-          'Alam mo ba? Ang ibig sabihin ng pangalan ng Thailand ay "Lupain ng mga Malaya" dahil hindi ito nasakop ng mga dayuhan!',
+          'Alam mo ba na ang ibig sabihin ng salitang Thailand ay "Land of the Free" o Lupain ng mga Malaya. Sa lahat ng mga bansa sa Timog-Silangang Asya (tulad ng Pilipinas na sinakop ng Espanya at Amerika), ang Thailand lamang ang tanging bansa na hindi kailanman sinakop ng mga bansa mula sa Europa!',
       coordinates: '15.9° H Latitud, 101.0° S Longhitud',
       normalizedX: 0.210,
       normalizedY: 0.440,
@@ -306,13 +307,13 @@ class _GameScreenState extends State<GameScreen>
     ),
     MapLocation(
       id: 'cambodia',
-      title: 'Kambodya (Cambodia)',
+      title: 'Cambodia',
       category: 'KARATIG-BANSA SA KANLURAN (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Kambodya ay isang bansa sa Timog-Silangang Asya na nasa kanluran ng Pilipinas. Mayaman ito sa mga sinaunang gusali at malalawak na ilog.',
+          'Ang Cambodia ay matatagpuan sa Timog-Silangang Asya na diretsong Kanluran ng Pilipinas. Napapaligiran ito ng Thailand, Laos, at Vietnam.',
       funFact:
-          'Alam mo ba? Sa Kambodya makikita ang Angkor Wat na pinakamalaking templong bato sa buong daigdig!',
+          'Alam mo ba na ang watawat ng Cambodia ang tanging bandila sa buong mundo na may larawan ng isang gusali. Ang gusaling ito ay ang sikat na templong Angkor Wat, na kinikilala bilang pinakamalaking panrelihiyong monumento o templo sa buong mundo.',
       coordinates: '12.6° H Latitud, 105.0° S Longhitud',
       normalizedX: 0.260,
       normalizedY: 0.485,
@@ -338,27 +339,27 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA TIMOG-KANLURAN (BISINAL)',
       geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Malaysia ay isang karatig-bansa sa timog-kanluran ng Pilipinas. Napakalapit ng bahagi nito sa mga isla ng Tawi-Tawi at Sulu.',
+          'Ang Malaysia ay matatagpuan sa Timog-Kanluran ng Pilipinas. Nahahati ang bansang ito sa dalawang bahagi: ang Peninsular Malaysia (sa Tangway ng Malaya) at ang East Malaysia (sa isla ng Borneo).',
       funFact:
-          'Alam mo ba? Sa gubat ng Malaysia tumutubo ang Rafflesia na pinakamalaking bulaklak sa buong daigdig!',
+          'Alam mo ba na sa Malaysia matatagpuan ang Rafflesia, ang pinakamalaking bulaklak sa buong mundo. Kaya nitong lumaki nang hanggang tatlong talampakan (3 feet) at kasingbigat ng isang maliit na aso! Ang nakakatuwa (at medyo nakakadiri), mabaho ang amoy nito na parang bulok na karne, kaya tinatawag din itong "corpse flower".',
       coordinates: '4.2° H Latitud, 102.0° S Longhitud',
       normalizedX: 0.215,
       normalizedY: 0.580,
       color: Color(0xFF26A69A),
     ),
     MapLocation(
-      id: 'singapore',
-      title: 'Singgapur (Singapore)',
-      category: 'KARATIG-BANSA SA TIMOG-KANLURAN (INSULAR)',
-      geoCategory: GeoCategory.insular,
+      id: 'brunei',
+      title: 'Brunei',
+      category: 'KARATIG-BANSA SA TIMOG-KANLURAN (BISINAL)',
+      geoCategory: GeoCategory.bisinal,
       description:
-          'Ang Singgapur ay isang maliit ngunit napakaunlad na pulong-bansa sa timog-kanluran ng Pilipinas. Kilala ito sa napakalinis at luntiang mga lansangan.',
+          'Ang Brunei ay matatagpuan sa Timog-Kanluran ng Pilipinas. Ito ay matatagpuan sa hilagang baybayin ng isla ng Borneo. Napapaligiran ito ng Malaysia at ng South China Sea.',
       funFact:
-          'Alam mo ba? Kahit maliit lamang ang Singgapur, isa ito sa pinakamaunlad at pinakamalinis na bansa sa mundo!',
-      coordinates: '1.4° H Latitud, 103.8° S Longhitud',
-      normalizedX: 0.248,
-      normalizedY: 0.630,
-      color: Color(0xFFE91E63),
+          'Alam mo ba na ang Brunei ay isa sa pinakamayamang bansa sa Asya dahil sa langis? Libre ang edukasyon at pagpapagamot para sa lahat ng kanilang mamamayan!',
+      coordinates: '4.5° H Latitud, 114.7° S Longhitud',
+      normalizedX: 0.490,
+      normalizedY: 0.565,
+      color: Color(0xFFFDD835),
     ),
     MapLocation(
       id: 'indonesia',
@@ -366,7 +367,7 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA TIMOG (INSULAR)',
       geoCategory: GeoCategory.insular,
       description:
-          'Ang Indonesia ang ating pinakamalapit na kapitbahay sa dakong timog. Ito ang bansang may pinakamaraming isla sa buong daigdig.',
+          'Ang Indonesia ay matatagpuan sa Timog ng Pilipinas. Ito ang pinakamalapit na karatig-bansa mula sa Mindanao. Ito ang pinakamalaking kapuluang bansa sa buong daigdig.',
       funFact:
           'Alam mo ba? Dito lamang nakatira ang Komodo Dragon na pinakamalaking buhay na bayawak sa mundo!',
       coordinates: '0.8° T Latitud, 113.9° S Longhitud',
@@ -380,21 +381,35 @@ class _GameScreenState extends State<GameScreen>
       category: 'KARATIG-BANSA SA SILANGAN (INSULAR)',
       geoCategory: GeoCategory.insular,
       description:
-          'Ang Palau ay isang magandang kapuluang bansa sa silangan ng Pilipinas. Napapaligiran ito ng malinaw na tubig ng Karagatang Pasipiko.',
+          'Ang Palau ay matatagpuan sa Timog-Silangan (southeast) o silangan (east) ng Pilipinas. Matatagpuan ito sa direksyong silangan ng Mindanao at timog-silangan ng Visayas. Ito ay nasa rehiyon ng Micronesia sa Karagatang Pasipiko. Ang pinakamalapit na pangunahing isla ng Pilipinas dito ay ang Mindanao.',
       funFact:
-          'Alam mo ba? May sikat na lawa sa Palau na may milyun-milyong dikya na hindi nanunusok kaya ligtas languyin!',
+          'Alam mo ba na mayroong sikat na lawa sa Palau kung saan milyun-milyong kulay-rosas at gintong dikya (jellyfish) ang lumalangoy. Hindi sila nakakatusok o nakalalason, kaya pwedeng-pwede silang makasabay sa paglangoy ng mga tao! Sa buong bansa rin ng Palau, walang kahit isang traffic light.',
       coordinates: '7.5° H Latitud, 134.6° S Longhitud',
       normalizedX: 0.840,
       normalizedY: 0.585,
       color: Color(0xFF00E5FF),
     ),
     MapLocation(
+      id: 'guam',
+      title: 'Guam',
+      category: 'TERITORYO SA SILANGAN (INSULAR)',
+      geoCategory: GeoCategory.insular,
+      description:
+          'Ang Guam ay matatagpuan sa Silangan ng Pilipinas. Ito ay teritoryo ng Estados Unidos sa Kanlurang Pasipiko na maituturing na "malapit na kamag-anak" ng Pilipinas dahil sa ating magkatulad na pinasasamang kasaysayan, lahi, at kultura.',
+      funFact:
+          'Alam mo ba na napakaliit ng Guam? Ang haba nito ay parang distansya lang mula Cebu City hanggang Carcar City kaya madali itong ikutin sa loob ng isang araw. Ang mga katutubong tao rito ay tinatawag na Chamorro.',
+      coordinates: '13.4° H Latitud, 144.8° S Longhitud',
+      normalizedX: 0.940,
+      normalizedY: 0.430,
+      color: Color(0xFF26A69A),
+    ),
+    MapLocation(
       id: 'australia',
-      title: 'Australya (Australia)',
+      title: 'Australia',
       category: 'KARATIG-KONTINENTE SA TIMOG (INSULAR)',
       geoCategory: GeoCategory.insular,
       description:
-          'Ang Australya ay isang malaking bansa at kontinente sa malayong timog ng Pilipinas. Napaliligiran ito ng malawak na karagatan.',
+          'Ang Australia ay isang malaking bansa at kontinente sa malayong timog ng Pilipinas. Napaliligiran ito ng malawak na karagatan.',
       funFact:
           'Alam mo ba? Dito lamang makikita ang mga Kangaroo at Koala na may bulsa sa kanilang tiyan para sa mga sanggol!',
       coordinates: '25.3° T Latitud, 133.8° S Longhitud',
@@ -1224,6 +1239,14 @@ class _GameScreenState extends State<GameScreen>
                                 child: _MapEdgeFadeOverlay(),
                               ),
 
+                              // Longitude & Latitude Coordinate Grid Layer (Educational Grid)
+                              if (_showMapGrid)
+                                const Positioned.fill(
+                                  child: IgnorePointer(
+                                    child: _MapCoordinateGridLayer(),
+                                  ),
+                                ),
+
                               // Interactive Pulsing Circle Points
                               for (final loc in _locations)
                                 if (_isPinVisible(loc))
@@ -1354,6 +1377,22 @@ class _GameScreenState extends State<GameScreen>
                     ),
                   ),
 
+                // Top-right Grid Toggle Button (Latitud at Longhitud)
+                if (_renderMap && !_isModalOpen && !_isCalibrationMode)
+                  Positioned(
+                    top: 16,
+                    right: widget.enableCalibration ? (isCompact ? 60 : 70) : 16,
+                    child: _GridToggleButton(
+                      isGridOn: _showMapGrid,
+                      isCompact: isCompact,
+                      onTap: () {
+                        setState(() {
+                          _showMapGrid = !_showMapGrid;
+                        });
+                      },
+                    ),
+                  ),
+
                 // Top-right Calibrate Points Button (hidden by default unless enableCalibration is true)
                 if (widget.enableCalibration && _renderMap && !_isModalOpen && !_isCalibrationMode)
                   Positioned(
@@ -1388,10 +1427,10 @@ class _GameScreenState extends State<GameScreen>
                   Positioned(
                     bottom: isCompact
                         ? math.max(
-                            MediaQuery.paddingOf(context).bottom + 28, 120.0)
-                        : 36.0,
-                    left: isCompact ? 14.0 : 24.0,
-                    right: isCompact ? 14.0 : 24.0,
+                            MediaQuery.paddingOf(context).bottom + 12.0, 14.0)
+                        : 20.0,
+                    left: isCompact ? 12.0 : 24.0,
+                    right: isCompact ? 12.0 : 24.0,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: TweenAnimationBuilder<double>(
@@ -2067,7 +2106,9 @@ class _CalibrationControlBar extends StatelessWidget {
   }
 }
 
-/// Floating glassy information card displayed when a user zooms into a map location.
+/// Information card displayed when a user taps a map location.
+/// Designed for Grade 4 learners: light high-contrast background, dark readable text,
+/// zoomable font size (A- / A+), and expandable height up to ~74% of the screen.
 class _LocationInfoCard extends StatefulWidget {
   const _LocationInfoCard({
     required this.location,
@@ -2087,11 +2128,38 @@ class _LocationInfoCard extends StatefulWidget {
 
 class _LocationInfoCardState extends State<_LocationInfoCard> {
   final ScrollController _scrollController = ScrollController();
+  double _fontScale = 1.0;
+  bool _isExpanded = false;
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _zoomInFont() {
+    AudioManager.instance.playClick();
+    if (_fontScale < 1.45) {
+      setState(() {
+        _fontScale = (_fontScale + 0.15).clamp(0.85, 1.45);
+      });
+    }
+  }
+
+  void _zoomOutFont() {
+    AudioManager.instance.playClick();
+    if (_fontScale > 0.85) {
+      setState(() {
+        _fontScale = (_fontScale - 0.15).clamp(0.85, 1.45);
+      });
+    }
+  }
+
+  void _toggleExpanded() {
+    AudioManager.instance.playClick();
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
   }
 
   @override
@@ -2102,282 +2170,338 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
     final onResetZoom = widget.onResetZoom;
 
     final screen = MediaQuery.sizeOf(context);
-    final maxWidth = screen.width > 650 ? 520.0 : screen.width * 0.94;
-    final maxHeight = screen.height * (isCompact ? 0.40 : 0.42);
+    final maxWidth = screen.width > 680 ? 560.0 : screen.width * 0.94;
+    // Mobile modal takes about half the phone height (0.52) or expands to 0.74 on demand
+    final maxHeight =
+        screen.height * (_isExpanded ? 0.74 : (isCompact ? 0.52 : 0.46));
 
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: maxWidth,
         maxHeight: maxHeight,
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(
-              isCompact ? 16 : 22,
-              isCompact ? 12 : 16,
-              isCompact ? 16 : 22,
-              isCompact ? 12 : 16,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(
+            color: location.color.withValues(alpha: 0.85),
+            width: 2.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.35),
+              blurRadius: 30,
+              spreadRadius: 2,
+              offset: const Offset(0, 10),
             ),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0A1950).withValues(alpha: 0.92),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: location.color.withValues(alpha: 0.65),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.50),
-                  blurRadius: 28,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top Row: Category Pill & Close Button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            isCompact ? 16 : 20,
+            isCompact ? 12 : 16,
+            isCompact ? 16 : 20,
+            isCompact ? 12 : 14,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top Action Row: Category Pill & Zoom/Expand/Close Controls
+              Row(
+                children: [
+                  // Category Pill
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: isCompact ? 8 : 10,
-                          vertical: isCompact ? 2 : 3,
+                          vertical: isCompact ? 3 : 4,
                         ),
                         decoration: BoxDecoration(
-                          color: location.color.withValues(alpha: 0.22),
+                          color: location.color.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: location.color.withValues(alpha: 0.55),
-                            width: 1,
+                            color: location.color,
+                            width: 1.2,
                           ),
                         ),
                         child: Text(
                           location.category.toUpperCase(),
                           style: TextStyle(
-                            fontSize: isCompact ? 9.5 : 11,
-                            fontWeight: FontWeight.bold,
-                            color: location.color,
-                            letterSpacing: 0.6,
+                            fontSize: (isCompact ? 10.5 : 11.5) * _fontScale,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF0F172A),
+                            letterSpacing: 0.5,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.close_rounded,
-                        color: Colors.white70,
-                        size: 20,
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      tooltip: 'Isara',
-                      onPressed: () {
-                        AudioManager.instance.playClick();
-                        onClose();
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(height: isCompact ? 2 : 6),
-
-                // Location Title in Jomhuria
-                Text(
-                  location.title,
-                  style: TextStyle(
-                    fontFamily: 'Jomhuria',
-                    fontSize: isCompact ? 34 : 42,
-                    color: Colors.white,
-                    height: 0.9,
-                    letterSpacing: 1.2,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: isCompact ? 4 : 8),
+                  const SizedBox(width: 6),
 
-                // Educational Description & Fun Fact - Scrollable by mouse wheel, touch, and click-and-drag!
-                Flexible(
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                        PointerDeviceKind.trackpad,
-                        PointerDeviceKind.stylus,
-                        PointerDeviceKind.unknown,
-                      },
+                  // Font Size A- Button
+                  _SmallIconToolButton(
+                    tooltip: 'Paliitin ang Font',
+                    onTap: _zoomOutFont,
+                    child: Text(
+                      'A-',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: _fontScale > 0.86
+                            ? const Color(0xFF0F172A)
+                            : Colors.grey,
+                      ),
                     ),
-                    child: RawScrollbar(
+                  ),
+                  const SizedBox(width: 4),
+
+                  // Font Size A+ Button
+                  _SmallIconToolButton(
+                    tooltip: 'Palakihin ang Font',
+                    onTap: _zoomInFont,
+                    child: Text(
+                      'A+',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: _fontScale < 1.44
+                            ? const Color(0xFF0F172A)
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // Expand/Shrink Height Button
+                  _SmallIconToolButton(
+                    tooltip:
+                        _isExpanded ? 'Paliitin ang Card' : 'Palakihin ang Card',
+                    onTap: _toggleExpanded,
+                    child: Icon(
+                      _isExpanded
+                          ? Icons.fullscreen_exit_rounded
+                          : Icons.fullscreen_rounded,
+                      color: const Color(0xFF0F172A),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+
+                  // Close Button
+                  _SmallIconToolButton(
+                    tooltip: 'Isara',
+                    onTap: () {
+                      AudioManager.instance.playClick();
+                      onClose();
+                    },
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: Color(0xFF475569),
+                      size: 20,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: isCompact ? 4 : 8),
+
+              // Title in Jomhuria Typography (High-contrast dark text)
+              Text(
+                location.title,
+                style: TextStyle(
+                  fontFamily: 'Jomhuria',
+                  fontSize: (isCompact ? 40 : 48) * _fontScale,
+                  color: const Color(0xFF0F172A),
+                  height: 0.88,
+                  letterSpacing: 1.2,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: isCompact ? 6 : 10),
+
+              // Scrollable Description & Fun Fact Box (Dark text on light background)
+              Flexible(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    dragDevices: {
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.mouse,
+                      PointerDeviceKind.trackpad,
+                      PointerDeviceKind.stylus,
+                      PointerDeviceKind.unknown,
+                    },
+                  ),
+                  child: RawScrollbar(
+                    controller: _scrollController,
+                    thumbVisibility: true,
+                    thickness: 4.0,
+                    radius: const Radius.circular(4),
+                    thumbColor: const Color(0xFF94A3B8),
+                    interactive: true,
+                    child: SingleChildScrollView(
                       controller: _scrollController,
-                      thumbVisibility: true,
-                      thickness: 3.5,
-                      radius: const Radius.circular(4),
-                      thumbColor: Colors.white.withValues(alpha: 0.35),
-                      interactive: true,
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        padding: const EdgeInsets.only(right: 6),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Precise Coordinates Badge (Tiyak na Lokasyon)
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: isCompact ? 9 : 12,
-                                vertical: isCompact ? 5 : 6,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Educational Description with high contrast black/dark slate text
+                          Text(
+                            location.description,
+                            style: TextStyle(
+                              fontSize: (isCompact ? 16.0 : 17.5) * _fontScale,
+                              color: const Color(0xFF1E293B),
+                              height: 1.45,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Fun Fact Box with warm light amber background & black text
+                          Container(
+                            padding: EdgeInsets.all(isCompact ? 12 : 14),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFFBEB),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: const Color(0xFFF59E0B),
+                                width: 1.5,
                               ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF00E5FF).withValues(alpha: 0.16),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: const Color(0xFF00E5FF).withValues(alpha: 0.60),
-                                  width: 1.2,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.my_location_rounded,
-                                    color: Color(0xFF00E5FF),
-                                    size: 15,
-                                  ),
-                                  const SizedBox(width: 7),
-                                  Flexible(
-                                    child: Text(
-                                      'TIYAK NA LOKASYON: ${location.coordinates}',
-                                      style: TextStyle(
-                                        fontSize: isCompact ? 11.5 : 12.5,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF00E5FF),
-                                        letterSpacing: 0.4,
-                                      ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.lightbulb_rounded,
+                                      color: Color(0xFFD97706),
+                                      size: 18,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // Description
-                            Text(
-                              location.description,
-                              style: TextStyle(
-                                fontSize: isCompact ? 13 : 14,
-                                color: Colors.white.withValues(alpha: 0.94),
-                                height: 1.45,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-
-                            // Fun Fact Card
-                            Container(
-                              padding: EdgeInsets.all(isCompact ? 10 : 12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFD54F).withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: const Color(0xFFFFD54F).withValues(alpha: 0.45),
-                                  width: 1.2,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.lightbulb_rounded,
-                                        color: Color(0xFFFFD54F),
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
                                         'ALAM MO BA? (FUN FACT)',
                                         style: TextStyle(
-                                          fontSize: isCompact ? 10.5 : 11.5,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFFFFD54F),
-                                          letterSpacing: 0.8,
+                                          fontSize:
+                                              (isCompact ? 11.5 : 12.5) * _fontScale,
+                                          fontWeight: FontWeight.w800,
+                                          color: const Color(0xFFB45309),
+                                          letterSpacing: 0.5,
                                         ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    location.funFact,
-                                    style: TextStyle(
-                                      fontSize: isCompact ? 12 : 13,
-                                      color: Colors.white.withValues(alpha: 0.95),
-                                      height: 1.4,
-                                      fontWeight: FontWeight.w400,
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  location.funFact,
+                                  style: TextStyle(
+                                    fontSize:
+                                        (isCompact ? 14.5 : 15.5) * _fontScale,
+                                    color: const Color(0xFF1E293B),
+                                    height: 1.42,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: isCompact ? 10 : 14),
+              ),
+              SizedBox(height: isCompact ? 10 : 12),
 
-                // Bottom Action: Reset View / Zoom Out (Permanently visible)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: 0.14),
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isCompact ? 12 : 14,
-                        vertical: isCompact ? 6 : 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.35),
-                          width: 1,
-                        ),
-                      ),
+              // Bottom Action: Reset Zoom / Return to Full Map
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0F172A),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isCompact ? 14 : 18,
+                      vertical: isCompact ? 8 : 10,
                     ),
-                    onPressed: () {
-                      AudioManager.instance.playClick();
-                      onResetZoom();
-                    },
-                    icon: Icon(
-                      Icons.zoom_out_map_rounded,
-                      size: isCompact ? 14 : 16,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    label: Text(
-                      'BUMALIK SA BUONG MAPA',
-                      style: TextStyle(
-                        fontSize: isCompact ? 11 : 12,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.6,
-                      ),
+                    elevation: 2,
+                  ),
+                  onPressed: () {
+                    AudioManager.instance.playClick();
+                    onResetZoom();
+                  },
+                  icon: Icon(
+                    Icons.zoom_out_map_rounded,
+                    size: (isCompact ? 15 : 17) * _fontScale,
+                  ),
+                  label: Text(
+                    'BUMALIK SA BUONG MAPA',
+                    style: TextStyle(
+                      fontSize: (isCompact ? 11.5 : 12.5) * _fontScale,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Helper button for small tool icons (A-, A+, Fullscreen, Close).
+class _SmallIconToolButton extends StatelessWidget {
+  const _SmallIconToolButton({
+    required this.tooltip,
+    required this.onTap,
+    required this.child,
+  });
+
+  final String tooltip;
+  final VoidCallback onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 32,
+          height: 32,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: const Color(0xFFCBD5E1),
+              width: 1,
             ),
           ),
+          child: child,
         ),
       ),
     );
@@ -2838,6 +2962,280 @@ class _MapEdgeFadeOverlay extends StatelessWidget {
   }
 }
 
+/// Educational Coordinate Grid Layer displaying Latitudes (Parallels) and
+/// Longitudes (Meridians) with distinct 0° Equator line and edge badges.
+class _MapCoordinateGridLayer extends StatelessWidget {
+  const _MapCoordinateGridLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return const CustomPaint(
+      painter: _CoordinateGridPainter(),
+      size: Size(1024.0, 1536.0),
+    );
+  }
+}
+
+class _CoordinateGridPainter extends CustomPainter {
+  const _CoordinateGridPainter();
+
+  // Parallels (Latitud - horizontal lines)
+  static const List<_GridLineData> _latitudes = [
+    _GridLineData(label: '30° H', pos: 338.0),
+    _GridLineData(label: '20° H', pos: 530.0),
+    _GridLineData(label: '10° H', pos: 783.0),
+    _GridLineData(label: '0° Ekwador', pos: 1105.0, isEquator: true),
+    _GridLineData(label: '10° T', pos: 1275.0),
+    _GridLineData(label: '20° T', pos: 1428.0),
+  ];
+
+  // Meridians (Longhitud - vertical lines)
+  static const List<_GridLineData> _longitudes = [
+    _GridLineData(label: '95° S', pos: 82.0),
+    _GridLineData(label: '100° S', pos: 195.0),
+    _GridLineData(label: '110° S', pos: 389.0),
+    _GridLineData(label: '120° S', pos: 635.0),
+    _GridLineData(label: '130° S', pos: 799.0),
+    _GridLineData(label: '140° S', pos: 932.0),
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final regularLinePaint = Paint()
+      ..color = const Color(0xFF81D4FA).withValues(alpha: 0.38)
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+
+    final equatorLinePaint = Paint()
+      ..color = const Color(0xFFFFD54F).withValues(alpha: 0.80)
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
+
+    // Draw Parallels (Horizontal Latitude Lines)
+    for (final lat in _latitudes) {
+      final y = lat.pos;
+      if (y < 0 || y > size.height) continue;
+
+      if (lat.isEquator) {
+        _drawDashedLine(
+          canvas,
+          Offset(0, y),
+          Offset(size.width, y),
+          equatorLinePaint,
+          dash: 14.0,
+          gap: 6.0,
+        );
+        // Center equator badge across ocean
+        _drawBadge(
+          canvas,
+          '0° EKWADOR (EQUATOR)',
+          Offset(size.width * 0.50, y),
+          isEquator: true,
+        );
+      } else {
+        _drawDashedLine(
+          canvas,
+          Offset(0, y),
+          Offset(size.width, y),
+          regularLinePaint,
+          dash: 8.0,
+          gap: 6.0,
+        );
+      }
+
+      // Edge badges (left and right)
+      _drawBadge(canvas, lat.label, Offset(32.0, y), isEquator: lat.isEquator);
+      _drawBadge(
+        canvas,
+        lat.label,
+        Offset(size.width - 32.0, y),
+        isEquator: lat.isEquator,
+      );
+    }
+
+    // Draw Meridians (Vertical Longitude Lines)
+    for (final lon in _longitudes) {
+      final x = lon.pos;
+      if (x < 0 || x > size.width) continue;
+
+      _drawDashedLine(
+        canvas,
+        Offset(x, 0),
+        Offset(x, size.height),
+        regularLinePaint,
+        dash: 8.0,
+        gap: 6.0,
+      );
+
+      // Edge badges (top and bottom)
+      _drawBadge(canvas, lon.label, Offset(x, 26.0));
+      _drawBadge(canvas, lon.label, Offset(x, size.height - 26.0));
+    }
+  }
+
+  void _drawDashedLine(
+    Canvas canvas,
+    Offset p1,
+    Offset p2,
+    Paint paint, {
+    double dash = 8.0,
+    double gap = 6.0,
+  }) {
+    final dx = p2.dx - p1.dx;
+    final dy = p2.dy - p1.dy;
+    final distance = math.sqrt(dx * dx + dy * dy);
+    if (distance == 0) return;
+    final unitX = dx / distance;
+    final unitY = dy / distance;
+    double current = 0.0;
+    while (current < distance) {
+      final start = Offset(p1.dx + unitX * current, p1.dy + unitY * current);
+      final nextLen = math.min(dash, distance - current);
+      final end = Offset(start.dx + unitX * nextLen, start.dy + unitY * nextLen);
+      canvas.drawLine(start, end, paint);
+      current += dash + gap;
+    }
+  }
+
+  void _drawBadge(
+    Canvas canvas,
+    String text,
+    Offset center, {
+    bool isEquator = false,
+  }) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: isEquator ? 12.0 : 10.5,
+          fontWeight: FontWeight.bold,
+          color: isEquator ? const Color(0xFFFFD54F) : const Color(0xFFE0F7FA),
+          letterSpacing: 0.5,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final paddingH = isEquator ? 8.0 : 6.0;
+    final paddingV = isEquator ? 4.0 : 3.0;
+    final w = textPainter.width + paddingH * 2;
+    final h = textPainter.height + paddingV * 2;
+    final rect = Rect.fromCenter(center: center, width: w, height: h);
+    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(6));
+
+    final bgPaint = Paint()
+      ..color = const Color(0xDD071B2B)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(rrect, bgPaint);
+
+    final borderPaint = Paint()
+      ..color = isEquator
+          ? const Color(0xFFFFD54F).withValues(alpha: 0.85)
+          : const Color(0xFF00E5FF).withValues(alpha: 0.55)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+    canvas.drawRRect(rrect, borderPaint);
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        center.dx - textPainter.width / 2,
+        center.dy - textPainter.height / 2,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _GridLineData {
+  const _GridLineData({
+    required this.label,
+    required this.pos,
+    this.isEquator = false,
+  });
+
+  final String label;
+  final double pos;
+  final bool isEquator;
+}
+
+/// Floating glass button to toggle the coordinate grid layer on or off.
+class _GridToggleButton extends StatelessWidget {
+  const _GridToggleButton({
+    required this.isGridOn,
+    required this.isCompact,
+    required this.onTap,
+  });
+
+  final bool isGridOn;
+  final bool isCompact;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: InkWell(
+          onTap: () {
+            AudioManager.instance.playClick();
+            onTap();
+          },
+          borderRadius: BorderRadius.circular(14),
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: isCompact ? 10 : 13,
+              vertical: isCompact ? 6 : 8,
+            ),
+            decoration: BoxDecoration(
+              color: isGridOn
+                  ? const Color(0xFF00E5FF).withValues(alpha: 0.24)
+                  : Colors.black.withValues(alpha: 0.35),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: isGridOn
+                    ? const Color(0xFF00E5FF).withValues(alpha: 0.80)
+                    : Colors.white.withValues(alpha: 0.35),
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isGridOn ? Icons.grid_on_rounded : Icons.grid_off_rounded,
+                  color: isGridOn ? const Color(0xFF00E5FF) : Colors.white70,
+                  size: isCompact ? 16 : 18,
+                ),
+                SizedBox(width: isCompact ? 5 : 6),
+                Text(
+                  isGridOn ? 'GRID' : 'GRID (OFF)',
+                  style: TextStyle(
+                    fontSize: isCompact ? 11.0 : 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: isGridOn ? Colors.white : Colors.white70,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// A glassy modal card with rounded corners, frosted blur, and hoverable button.
 /// The title is simply "MALIGAYANG PAGDATING" while the body content teaches
 /// the context of "Mapa ng Pilipinas sa Asya".
@@ -2870,7 +3268,7 @@ class _GlassWelcomeModal extends StatelessWidget {
       tag = '🧭 TIYAK NA LOKASYON';
       tagColor = const Color(0xFF00E676);
     } else if (isLearningMode) {
-      title = 'MALIGAYANG PAGDATING';
+      title = 'MALIGAYANG PAGDATING!';
       titleColor = Colors.white;
       tag = 'MODE NG PAGKATUTO';
       tagColor = Colors.white;
@@ -2882,7 +3280,7 @@ class _GlassWelcomeModal extends StatelessWidget {
           '“Handa ka na bang tuklasin ang mapa gamit ang mga koordinada?”\n\n“Nakatago ang lahat ng punto sa mapa. Kailangan mong suriin ang ibinigay na latitud at longhitud upang matukoy ang tamang lugar.”\n\n“Bawat tamang sagot ay magbubukas ng punto sa mapa. Naitatala ang iyong progreso kahit pansamantala kang umalis!”';
     } else if (isLearningMode) {
       welcomeText =
-          'Handa ka na bang tuklasin ang kinalalagyan ng Pilipinas sa mapa ng Asya? Sa araling ito, ating pag-aaralan ang lokasyon ng ating kapuluan sa Timog-Silangang Asya, ang mga karatig-bansa, at ang mga anyong tubig na nakapaligid dito tulad ng Dagat Kanlurang Pilipinas at Karagatang Pasipiko.\n\nPindutin ang "MAGPATULOY" upang simulan ang pagtuklas sa bawat bahagi ng mapa!';
+          'Handa ka na bang tuklasin ang kinalalagyan ng Pilipinas sa mapa ng Asya?\n\nSa araling ito, aalamin natin kung nasaan ang Pilipinas, ang mga karatig-bansa nito, at ang mga anyong tubig na nakapaligid dito. Handa ka na ba?\n\nPindutin ang “Magsimula” kung ikaw ay handa na sa pagtuklas!';
     } else {
       welcomeText =
           '“Handa ka na bang maging isang MapQuest Explorer?”\n\n“Gamitin ang iyong mapa upang tuklasin ang lokasyon ng Pilipinas sa Asya, hanapin ang mga karatig-bansa, tukuyin ang mga anyong tubig, at lutasin ang mga hamon!”\n\n“Bawat tamang sagot ay magbibigay sa iyo ng puntos at gantimpala.”';
@@ -2892,7 +3290,7 @@ class _GlassWelcomeModal extends StatelessWidget {
     if (isCoordinateMode) {
       buttonLabel = 'SIMULAN ANG PAGHAHANAP';
     } else if (isLearningMode) {
-      buttonLabel = 'MAGPATULOY';
+      buttonLabel = 'MAGSIMULA';
     } else {
       buttonLabel = 'SIMULAN ANG MISYON';
     }

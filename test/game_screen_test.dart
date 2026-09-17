@@ -38,10 +38,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1000));
 
-    // Tap MAGPATULOY to dismiss the message modal
-    final magpatuloyFinder = find.text('MAGPATULOY');
-    expect(magpatuloyFinder, findsOneWidget);
-    await tester.tap(magpatuloyFinder);
+    // Tap MAGSIMULA to dismiss the message modal
+    final magsimulaFinder = find.byWidgetPredicate(
+      (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+    );
+    expect(magsimulaFinder, findsOneWidget);
+    await tester.tap(magsimulaFinder);
 
     // Modal reverseDuration is 700ms; wait 800ms for slide exit
     await tester.pump(const Duration(milliseconds: 800));
@@ -97,7 +99,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1000));
 
     // Dismiss modal
-    await tester.tap(find.text('MAGPATULOY'));
+    await tester.tap(find.byWidgetPredicate(
+      (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+    ));
     await tester.pump(const Duration(milliseconds: 800));
     await tester.pump();
 
@@ -108,7 +112,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 800));
 
     // Verify detailed description modal (title appears on pin tooltip and in modal title)
-    expect(find.text('Kambodya (Cambodia)'), findsNWidgets(2));
+    expect(find.text('Cambodia'), findsNWidgets(2));
     expect(find.text('ALAM MO BA? (FUN FACT)'), findsOneWidget);
     expect(find.textContaining('Angkor Wat'), findsOneWidget);
     expect(find.textContaining('Timog-Silangang Asya'), findsOneWidget);
@@ -135,7 +139,9 @@ void main() {
     // Settle intro and dismiss welcome modal
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1000));
-    await tester.tap(find.text('MAGPATULOY'));
+    await tester.tap(find.byWidgetPredicate(
+      (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+    ));
     await tester.pump(const Duration(milliseconds: 800));
     await tester.pump();
 
@@ -242,7 +248,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1000));
 
     // Dismiss welcome dialog
-    await tester.tap(find.text('MAGPATULOY'));
+    await tester.tap(find.byWidgetPredicate(
+      (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+    ));
     await tester.pump(const Duration(milliseconds: 800));
     await tester.pump();
 
