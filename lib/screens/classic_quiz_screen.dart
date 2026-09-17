@@ -1,0 +1,816 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+import '../models/classic_question.dart';
+import '../services/audio_manager.dart';
+import 'home_screen.dart';
+import 'mode_selection_screen.dart';
+
+/// Classic Mode Quiz Screen:
+/// A fast-paced, mapless quiz with 10 randomized 3-choice questions about
+/// Philippine and Asian geography based on Grade 4 Araling Panlipunan.
+class ClassicQuizScreen extends StatefulWidget {
+  const ClassicQuizScreen({
+    super.key,
+    this.onBack,
+  });
+
+  final VoidCallback? onBack;
+
+  @override
+  State<ClassicQuizScreen> createState() => _ClassicQuizScreenState();
+}
+
+class _ClassicQuizScreenState extends State<ClassicQuizScreen>
+    with SingleTickerProviderStateMixin {
+  late List<ClassicQuestion> _questions;
+  int _currentIndex = 0;
+  int? _selectedOptionIndex;
+  bool _hasAnswered = false;
+  int _correctCount = 0;
+  int _score = 0;
+  bool _isQuizCompleted = false;
+
+  late final AnimationController _cardAnimController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 350),
+  );
+  late final Animation<double> _cardFadeAnim = CurvedAnimation(
+    parent: _cardAnimController,
+    curve: Curves.easeOut,
+  );
+  late final Animation<Offset> _cardSlideAnim = Tween<Offset>(
+    begin: const Offset(0.0, 0.08),
+    end: Offset.zero,
+  ).animate(CurvedAnimation(
+    parent: _cardAnimController,
+    curve: Curves.easeOutCubic,
+  ));
+
+  @override
+  void initState() {
+    super.initState();
+    _startNewQuiz();
+  }
+
+  void _startNewQuiz() {
+    setState(() {
+      _questions = ClassicQuestionRegistry.getRandomQuestions(10);
+      _currentIndex = 0;
+      _selectedOptionIndex = null;
+      _hasAnswered = false;
+      _correctCount = 0;
+      _score = 0;
+      _isQuizCompleted = false;
+    });
+    _cardAnimController.forward(from: 0.0);
+  }
+
+  @override
+  void dispose() {
+    _cardAnimController.dispose();
+    super.dispose();
+  }
+
+  void _onOptionSelected(int index) {
+    if (_hasAnswered) return;
+
+    final question = _questions[_currentIndex];
+    final isCorrect = question.isCorrect(index);
+
+    if (isCorrect) {
+      AudioManager.instance.playCorrect();
+    } else {
+      AudioManager.instance.playWrong();
+    }
+
+    setState(() {
+      _selectedOptionIndex = index;
+      _hasAnswered = true;
+      if (isCorrect) {
+        _correctCount++;
+        _score += 10;
+      }
+    });
+  }
+
+  void _onNextQuestion() {
+    if (_currentIndex < _questions.length - 1) {
+      setState(() {
+        _currentIndex++;
+        _selectedOptionIndex = null;
+        _hasAnswered = false;
+      });
+      _cardAnimController.forward(from: 0.0);
+    } else {
+      setState(() {
+        _isQuizCompleted = true;
+      });
+      if (_correctCount >= 6) {
+        AudioManager.instance.playCorrect();
+      } else {
+        AudioManager.instance.playWrong();
+      }
+    }
+  }
+
+  void _handleBack() {
+    if (widget.onBack != null) {
+      try {
+        widget.onBack!();
+        return;
+      } catch (_) {}
+    }
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ModeSelectionScreen(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
+
+  void _handleReturnToMenu() {
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const HomeScreen(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screen = MediaQuery.sizeOf(context);
+    final isCompact = screen.width < 600;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_isQuizCompleted) {
+          _handleReturnToMenu();
+        } else {
+          _handleBack();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: const Color(0xFF07143F),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF0C27DA),
+                Color(0xFF07164C),
+                Color(0xFF030D2A),
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                // Top Header Bar
+                _buildHeader(isCompact),
+
+                // Main Quiz Content / Completed Card
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isCompact ? 16 : 28,
+                        vertical: isCompact ? 10 : 20,
+                      ),
+                      child: _isQuizCompleted
+                          ? _buildCompletionCard(isCompact)
+                          : _buildQuestionCard(isCompact),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(bool isCompact) {
+    final progress = (_currentIndex + 1) / _questions.length;
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: isCompact ? 14 : 24,
+        vertical: isCompact ? 10 : 14,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              // Back Button
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    AudioManager.instance.playClick();
+                    _handleBack();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.30),
+                        width: 1,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Title / Mode Tag
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'KLASIKONG PAGSUSULIT',
+                      style: TextStyle(
+                        fontFamily: 'Jomhuria',
+                        fontSize: isCompact ? 26 : 32,
+                        color: Colors.amber,
+                        height: 0.85,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    Text(
+                      '10 Tanong • 3 Pagpipilian',
+                      style: TextStyle(
+                        fontSize: isCompact ? 11 : 12.5,
+                        color: Colors.white.withValues(alpha: 0.75),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Score Badge
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isCompact ? 10 : 14,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.20),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.amber.withValues(alpha: 0.65),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.amber.withValues(alpha: 0.25),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('⭐', style: TextStyle(fontSize: 14)),
+                    const SizedBox(width: 5),
+                    Text(
+                      '$_score',
+                      style: TextStyle(
+                        fontSize: isCompact ? 13 : 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amberAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Linear Progress Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 6,
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E5FF)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuestionCard(bool isCompact) {
+    final question = _questions[_currentIndex];
+    final screen = MediaQuery.sizeOf(context);
+    final maxWidth = screen.width > 700 ? 640.0 : screen.width * 0.95;
+
+    return SlideTransition(
+      position: _cardSlideAnim,
+      child: FadeTransition(
+        opacity: _cardFadeAnim,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                padding: EdgeInsets.all(isCompact ? 18 : 26),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF081544).withValues(alpha: 0.90),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: const Color(0xFF00E5FF).withValues(alpha: 0.45),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.50),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Question Counter Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF00E5FF).withValues(alpha: 0.18),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: const Color(0xFF00E5FF).withValues(alpha: 0.50),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            'TANONG ${_currentIndex + 1} NG 10',
+                            style: const TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF00E5FF),
+                              letterSpacing: 0.6,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '$_correctCount Tama',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white.withValues(alpha: 0.70),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Question Prompt
+                    Text(
+                      question.prompt,
+                      style: TextStyle(
+                        fontSize: isCompact ? 15.5 : 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1.38,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    // 3 Choices
+                    for (int i = 0; i < question.options.length; i++)
+                      _buildOptionTile(
+                        index: i,
+                        optionText: question.options[i],
+                        isCompact: isCompact,
+                        question: question,
+                      ),
+
+                    // Explanation Box (shown after answer)
+                    if (_hasAnswered) ...[
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: EdgeInsets.all(isCompact ? 12 : 14),
+                        decoration: BoxDecoration(
+                          color: _selectedOptionIndex == question.correctIndex
+                              ? const Color(0xFF00E676).withValues(alpha: 0.15)
+                              : const Color(0xFFFF9100).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: _selectedOptionIndex == question.correctIndex
+                                ? const Color(0xFF00E676).withValues(alpha: 0.55)
+                                : const Color(0xFFFF9100).withValues(alpha: 0.55),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _selectedOptionIndex == question.correctIndex
+                                  ? '🎉 '
+                                  : '💡 ',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _selectedOptionIndex == question.correctIndex
+                                        ? 'TAMA ANG IYONG SAGOT!'
+                                        : 'ALAMIN ANG PALIWANAG:',
+                                    style: TextStyle(
+                                      fontSize: isCompact ? 11.5 : 12.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: _selectedOptionIndex ==
+                                              question.correctIndex
+                                          ? const Color(0xFF00E676)
+                                          : const Color(0xFFFFB74D),
+                                      letterSpacing: 0.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    question.explanation,
+                                    style: TextStyle(
+                                      fontSize: isCompact ? 12 : 13.5,
+                                      color: Colors.white.withValues(alpha: 0.95),
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+
+                      // Next / Complete Button
+                      SizedBox(
+                        height: isCompact ? 44 : 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            AudioManager.instance.playClick();
+                            _onNextQuestion();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                            foregroundColor: const Color(0xFF0B1953),
+                            elevation: 8,
+                            shadowColor: Colors.amber.withValues(alpha: 0.4),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Text(
+                            _currentIndex < _questions.length - 1
+                                ? 'SUSUNOD NA TANONG ➔'
+                                : 'TINGNAN ANG RESULTA 🏆',
+                            style: TextStyle(
+                              fontSize: isCompact ? 14 : 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionTile({
+    required int index,
+    required String optionText,
+    required bool isCompact,
+    required ClassicQuestion question,
+  }) {
+    Color borderColor = Colors.white.withValues(alpha: 0.25);
+    Color bgColor = Colors.white.withValues(alpha: 0.06);
+    Color textColor = Colors.white;
+    Widget? trailingIcon;
+
+    if (_hasAnswered) {
+      if (index == question.correctIndex) {
+        borderColor = const Color(0xFF00E676);
+        bgColor = const Color(0xFF00E676).withValues(alpha: 0.22);
+        trailingIcon = const Icon(Icons.check_circle_rounded,
+            color: Color(0xFF00E676), size: 20);
+      } else if (_selectedOptionIndex == index) {
+        borderColor = const Color(0xFFFF5252);
+        bgColor = const Color(0xFFFF5252).withValues(alpha: 0.22);
+        trailingIcon = const Icon(Icons.cancel_rounded,
+            color: Color(0xFFFF5252), size: 20);
+      }
+    }
+
+    final letter = String.fromCharCode(65 + index); // A, B, C
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: _hasAnswered
+              ? null
+              : () {
+                  AudioManager.instance.playClick();
+                  _onOptionSelected(index);
+                },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(
+              horizontal: isCompact ? 12 : 16,
+              vertical: isCompact ? 11 : 13,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: borderColor, width: 1.4),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    letter,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    optionText,
+                    style: TextStyle(
+                      fontSize: isCompact ? 13.5 : 15,
+                      fontWeight: FontWeight.w500,
+                      color: textColor,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+                if (trailingIcon != null) ...[
+                  const SizedBox(width: 8),
+                  trailingIcon,
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompletionCard(bool isCompact) {
+    final percentage = ((_correctCount / _questions.length) * 100).round();
+    String badgeTitle = 'EXPLORER NG ASYA';
+    String badgeEmoji = '🥉';
+    Color badgeColor = Colors.orangeAccent;
+    String feedbackMessage =
+      'Magpatuloy sa pagsasanay upang higit pang maunawaan ang mapa ng Pilipinas!';
+
+    if (_correctCount >= 9) {
+      badgeTitle = 'DALUBHASA SA HEOGRAPIYA';
+      badgeEmoji = '🥇';
+      badgeColor = Colors.amber;
+      feedbackMessage =
+          'Kamangha-mangha! Lubos mong kabisado ang lokasyon at katangian ng Pilipinas sa Asya!';
+    } else if (_correctCount >= 6) {
+      badgeTitle = 'MAHUSAY NA MANLALAKBAY';
+      badgeEmoji = '🥈';
+      badgeColor = const Color(0xFF00E5FF);
+      feedbackMessage =
+          'Napakagaling! Malapit mo nang makabisado ang buong mapa at mga karatig-bansa!';
+    }
+
+    final screen = MediaQuery.sizeOf(context);
+    final maxWidth = screen.width > 600 ? 520.0 : screen.width * 0.94;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(26),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            padding: EdgeInsets.all(isCompact ? 20 : 32),
+            decoration: BoxDecoration(
+              color: const Color(0xFF081544).withValues(alpha: 0.94),
+              borderRadius: BorderRadius.circular(26),
+              border: Border.all(
+                color: Colors.amber.withValues(alpha: 0.65),
+                width: 1.8,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.amber.withValues(alpha: 0.25),
+                  blurRadius: 36,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(badgeEmoji, style: const TextStyle(fontSize: 48)),
+                const SizedBox(height: 6),
+                Text(
+                  'TAPOS NA ANG PAGSUSULIT!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Jomhuria',
+                    fontSize: isCompact ? 36 : 46,
+                    color: Colors.amber,
+                    height: 0.85,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Badge Container
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: badgeColor.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: badgeColor.withValues(alpha: 0.60), width: 1.2),
+                  ),
+                  child: Text(
+                    badgeTitle,
+                    style: TextStyle(
+                      fontSize: isCompact ? 12 : 13.5,
+                      fontWeight: FontWeight.bold,
+                      color: badgeColor,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+
+                // Score Details
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildStatCol('TAMANG SAGOT', '$_correctCount / 10', Colors.white),
+                    Container(width: 1, height: 36, color: Colors.white24),
+                    _buildStatCol('KABUUANG PUNTOS', '$_score', Colors.amberAccent),
+                    Container(width: 1, height: 36, color: Colors.white24),
+                    _buildStatCol('BAHAGDAN', '$percentage%', const Color(0xFF00E5FF)),
+                  ],
+                ),
+                const SizedBox(height: 18),
+
+                // Feedback
+                Text(
+                  feedbackMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: isCompact ? 13 : 14.5,
+                    color: Colors.white.withValues(alpha: 0.90),
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Action Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          AudioManager.instance.playClick();
+                          _startNewQuiz();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white54, width: 1.4),
+                          padding: EdgeInsets.symmetric(vertical: isCompact ? 12 : 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'MAGLARO MULI',
+                          style: TextStyle(
+                            fontSize: isCompact ? 12.5 : 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          AudioManager.instance.playClick();
+                          _handleReturnToMenu();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                          foregroundColor: const Color(0xFF081544),
+                          padding: EdgeInsets.symmetric(vertical: isCompact ? 12 : 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 6,
+                        ),
+                        child: Text(
+                          'BUMALIK SA MENU',
+                          style: TextStyle(
+                            fontSize: isCompact ? 12.5 : 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCol(String label, String value, Color valueColor) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: valueColor,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9.5,
+            fontWeight: FontWeight.w600,
+            color: Colors.white.withValues(alpha: 0.65),
+            letterSpacing: 0.4,
+          ),
+        ),
+      ],
+    );
+  }
+}

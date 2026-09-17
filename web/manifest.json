@@ -1,6 +1,6 @@
 {
-    "name": "geoquest_philippines",
-    "short_name": "geoquest_philippines",
+    "name": "MapQuest",
+    "short_name": "MapQuest",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

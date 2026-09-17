@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../services/audio_manager.dart';
+
 /// A large tappable card used on the home screen.
 ///
 /// Each card represents one app mode (Learning or Game).
@@ -33,7 +35,10 @@ class ModeCard extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          AudioManager.instance.playClick();
+          onTap();
+        },
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Row(
