@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MapPointStorage {
   MapPointStorage._();
 
-  static const String _storageKey = 'map_points_custom_coordinates_v1';
+  static const String _storageKey = 'map_points_custom_coordinates_v2';
   static Map<String, Offset> _cachedPositions = {};
 
   static Map<String, Offset> get cachedPositions =>
@@ -19,6 +19,9 @@ class MapPointStorage {
   static Future<Map<String, Offset>> loadCustomPositions() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey('map_points_custom_coordinates_v1')) {
+        await prefs.remove('map_points_custom_coordinates_v1');
+      }
       final jsonStr = prefs.getString(_storageKey);
       if (jsonStr != null && jsonStr.isNotEmpty) {
         final Map<String, dynamic> decoded = jsonDecode(jsonStr);

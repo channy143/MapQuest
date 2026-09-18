@@ -282,7 +282,7 @@ void main() {
 
       // Coordinate quest panel at bottom is visible
       expect(find.text('COORDINATE QUEST'), findsWidgets);
-      expect(find.textContaining('0 / 21 Nabuksan'), findsOneWidget);
+      expect(find.textContaining('0 / 22 Nabuksan'), findsOneWidget);
 
       // Coordinates text is displayed (first locked location is Luzon: 16.6° H Latitud, 121.3° S Longhitud)
       expect(find.text('16.6° H Latitud, 121.3° S Longhitud'), findsOneWidget);
@@ -304,8 +304,8 @@ void main() {
       await tester.tap(closeBtn);
       await tester.pump(const Duration(milliseconds: 400));
 
-      // Progress counter increases to 1 / 21
-      expect(find.textContaining('1 / 21 Nabuksan'), findsOneWidget);
+      // Progress counter increases to 1 / 22
+      expect(find.textContaining('1 / 22 Nabuksan'), findsOneWidget);
 
       // Verified persistence in storage
       final unlockedInStorage = await CoordinateQuestStorage.getUnlockedLocations();

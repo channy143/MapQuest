@@ -173,8 +173,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Dito matatagpuan ang Bulkang Taal na isa sa pinakamaliliit na aktibong bulkan sa buong mundo!',
       coordinates: '16.6° H Latitud, 121.3° S Longhitud',
-      normalizedX: 0.650,
-      normalizedY: 0.400,
+      normalizedX: 0.615,
+      normalizedY: 0.398,
       color: Color(0xFFFFCA28),
     ),
     MapLocation(
@@ -187,8 +187,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Sa Bohol makikita ang mahigit isang libong burol na nagiging kulay tsokolate kung tag-araw!',
       coordinates: '11.0° H Latitud, 123.4° S Longhitud',
-      normalizedX: 0.695,
-      normalizedY: 0.490,
+      normalizedX: 0.676,
+      normalizedY: 0.486,
       color: Color(0xFF26C6DA),
     ),
     MapLocation(
@@ -201,8 +201,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Tinatawag na "Kamalig ng Pilipinas" ang Mindanao dahil sa masaganang ani ng pagkain at prutas. Dito rin matatagpuan ang Philippine Eagle na pambansang ibon at isa sa pinakamalaking agila sa mundo!',
       coordinates: '7.9° H Latitud, 125.1° S Longhitud',
-      normalizedX: 0.680,
-      normalizedY: 0.575,
+      normalizedX: 0.694,
+      normalizedY: 0.554,
       color: Color(0xFFFFA726),
     ),
     MapLocation(
@@ -229,8 +229,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Sa gitna ng dagat na ito matatagpuan ang Tubbataha Reef na tirahan ng napakaraming makukulay na isda at korales!',
       coordinates: '8.0° H Latitud, 120.0° S Longhitud',
-      normalizedX: 0.570,
-      normalizedY: 0.535,
+      normalizedX: 0.436,
+      normalizedY: 0.567,
       color: Color(0xFF00ACC1),
     ),
 
@@ -245,8 +245,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na tumutugtog ng classical music ang mga truck ng basura para malaman ng mga tao na oras na para magtapon ng basura. Ang hugis ng Taiwan sa mapa ay parang isang kamote!',
       coordinates: '23.7° H Latitud, 121.0° S Longhitud',
-      normalizedX: 0.670,
-      normalizedY: 0.300,
+      normalizedX: 0.643,
+      normalizedY: 0.241,
       color: Color(0xFFAB47BC),
     ),
     MapLocation(
@@ -273,7 +273,7 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na ang Japan ay kilala bilang "Land of the Rising Sun". Kung titingnan mo ang kanilang bandila, ang pulang bilog sa gitna ay sumisimbolo sa araw.',
       coordinates: '36.2° H Latitud, 138.3° S Longhitud',
-      normalizedX: 0.820,
+      normalizedX: 0.853,
       normalizedY: 0.130,
       color: Color(0xFFEC407A),
     ),
@@ -287,8 +287,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Sa Vietnam matatagpuan ang pinakamalaking kuweba sa buong mundo na may sariling gubat sa loob!',
       coordinates: '14.1° H Latitud, 108.3° S Longhitud',
-      normalizedX: 0.310,
-      normalizedY: 0.400,
+      normalizedX: 0.286,
+      normalizedY: 0.325,
       color: Color(0xFFEF5350),
     ),
     MapLocation(
@@ -301,8 +301,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na ang ibig sabihin ng salitang Thailand ay "Land of the Free" o Lupain ng mga Malaya. Sa lahat ng mga bansa sa Timog-Silangang Asya (tulad ng Pilipinas na sinakop ng Espanya at Amerika), ang Thailand lamang ang tanging bansa na hindi kailanman sinakop ng mga bansa mula sa Europa!',
       coordinates: '15.9° H Latitud, 101.0° S Longhitud',
-      normalizedX: 0.210,
-      normalizedY: 0.440,
+      normalizedX: 0.159,
+      normalizedY: 0.384,
       color: Color(0xFFFB8C00),
     ),
     MapLocation(
@@ -315,8 +315,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na ang watawat ng Cambodia ang tanging bandila sa buong mundo na may larawan ng isang gusali. Ang gusaling ito ay ang sikat na templong Angkor Wat, na kinikilala bilang pinakamalaking panrelihiyong monumento o templo sa buong mundo.',
       coordinates: '12.6° H Latitud, 105.0° S Longhitud',
-      normalizedX: 0.260,
-      normalizedY: 0.485,
+      normalizedX: 0.244,
+      normalizedY: 0.445,
       color: Color(0xFF8E24AA),
     ),
     MapLocation(
@@ -330,7 +330,7 @@ class _GameScreenState extends State<GameScreen>
           'Alam mo ba? May libu-libong sinaunang templo na kulay ginto sa kapatagan ng Myanmar!',
       coordinates: '21.9° H Latitud, 95.9° S Longhitud',
       normalizedX: 0.095,
-      normalizedY: 0.315,
+      normalizedY: 0.275,
       color: Color(0xFFFFB300),
     ),
     MapLocation(
@@ -343,9 +343,23 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na sa Malaysia matatagpuan ang Rafflesia, ang pinakamalaking bulaklak sa buong mundo. Kaya nitong lumaki nang hanggang tatlong talampakan (3 feet) at kasingbigat ng isang maliit na aso! Ang nakakatuwa (at medyo nakakadiri), mabaho ang amoy nito na parang bulok na karne, kaya tinatawag din itong "corpse flower".',
       coordinates: '4.2° H Latitud, 102.0° S Longhitud',
-      normalizedX: 0.215,
-      normalizedY: 0.580,
+      normalizedX: 0.445,
+      normalizedY: 0.635,
       color: Color(0xFF26A69A),
+    ),
+    MapLocation(
+      id: 'singapore',
+      title: 'Singapore',
+      category: 'KARATIG-BANSA SA TIMOG-KANLURAN (BISINAL)',
+      geoCategory: GeoCategory.bisinal,
+      description:
+          'Ang Singapore ay isang maunlad na pulong-bansa sa timog ng Tangway ng Malaya. Kilala ito bilang isa sa pinakamalinis at pinakaligtas na bansa sa buong mundo.',
+      funFact:
+          'Alam mo ba na tinatawag na "Lion City" ang Singapore? Ang sikat na estatwa ng Merlion dito ay may ulo ng leon at katawan ng isda!',
+      coordinates: '1.3° H Latitud, 103.8° S Longhitud',
+      normalizedX: 0.228,
+      normalizedY: 0.655,
+      color: Color(0xFFE91E63),
     ),
     MapLocation(
       id: 'brunei',
@@ -357,8 +371,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na ang Brunei ay isa sa pinakamayamang bansa sa Asya dahil sa langis? Libre ang edukasyon at pagpapagamot para sa lahat ng kanilang mamamayan!',
       coordinates: '4.5° H Latitud, 114.7° S Longhitud',
-      normalizedX: 0.490,
-      normalizedY: 0.565,
+      normalizedX: 0.495,
+      normalizedY: 0.588,
       color: Color(0xFFFDD835),
     ),
     MapLocation(
@@ -371,8 +385,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Dito lamang nakatira ang Komodo Dragon na pinakamalaking buhay na bayawak sa mundo!',
       coordinates: '0.8° T Latitud, 113.9° S Longhitud',
-      normalizedX: 0.450,
-      normalizedY: 0.760,
+      normalizedX: 0.463,
+      normalizedY: 0.753,
       color: Color(0xFF00897B),
     ),
     MapLocation(
@@ -399,8 +413,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na napakaliit ng Guam? Ang haba nito ay parang distansya lang mula Cebu City hanggang Carcar City kaya madali itong ikutin sa loob ng isang araw. Ang mga katutubong tao rito ay tinatawag na Chamorro.',
       coordinates: '13.4° H Latitud, 144.8° S Longhitud',
-      normalizedX: 0.940,
-      normalizedY: 0.430,
+      normalizedX: 0.948,
+      normalizedY: 0.470,
       color: Color(0xFF26A69A),
     ),
     MapLocation(
@@ -413,8 +427,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Dito lamang makikita ang mga Kangaroo at Koala na may bulsa sa kanilang tiyan para sa mga sanggol!',
       coordinates: '25.3° T Latitud, 133.8° S Longhitud',
-      normalizedX: 0.300,
-      normalizedY: 0.940,
+      normalizedX: 0.239,
+      normalizedY: 0.925,
       color: Color(0xFFE65100),
     ),
 
@@ -429,8 +443,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? Dito matatagpuan ang pinakamalalim na bahagi ng dagat sa mundo kung saan kasya ang buong Bundok Everest!',
       coordinates: '15.0° H Latitud, 135.0° S Longhitud',
-      normalizedX: 0.840,
-      normalizedY: 0.480,
+      normalizedX: 0.849,
+      normalizedY: 0.466,
       color: Color(0xFF42A5F5),
     ),
     MapLocation(
@@ -457,8 +471,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba? May mga pambihirang isda sa ilalim ng dagat na ito na may sariling natural na ilaw sa katawan!',
       coordinates: '4.0° H Latitud, 122.0° S Longhitud',
-      normalizedX: 0.665,
-      normalizedY: 0.650,
+      normalizedX: 0.709,
+      normalizedY: 0.643,
       color: Color(0xFF5C6BC0),
     ),
   ];
