@@ -344,8 +344,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na sa Malaysia matatagpuan ang Rafflesia, ang pinakamalaking bulaklak sa buong mundo. Kaya nitong lumaki nang hanggang tatlong talampakan (3 feet) at kasingbigat ng isang maliit na aso! Ang nakakatuwa (at medyo nakakadiri), mabaho ang amoy nito na parang bulok na karne, kaya tinatawag din itong "corpse flower".',
       coordinates: '4.2° H Latitud, 102.0° S Longhitud',
-      normalizedX: 0.236,
-      normalizedY: 0.608,
+      normalizedX: 0.238,
+      normalizedY: 0.588,
       color: Color(0xFF26A69A),
     ),
     MapLocation(
@@ -372,8 +372,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na ang Brunei ay isa sa pinakamayamang bansa sa Asya dahil sa langis? Libre ang edukasyon at pagpapagamot para sa lahat ng kanilang mamamayan!',
       coordinates: '4.5° H Latitud, 114.7° S Longhitud',
-      normalizedX: 0.495,
-      normalizedY: 0.600,
+      normalizedX: 0.484,
+      normalizedY: 0.612,
       color: Color(0xFFFDD835),
     ),
     MapLocation(
