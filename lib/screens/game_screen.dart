@@ -357,8 +357,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na tinatawag na "Lion City" ang Singapore? Ang sikat na estatwa ng Merlion dito ay may ulo ng leon at katawan ng isda!',
       coordinates: '1.3° H Latitud, 103.8° S Longhitud',
-      normalizedX: 0.228,
-      normalizedY: 0.655,
+      normalizedX: 0.246,
+      normalizedY: 0.635,
       color: Color(0xFFE91E63),
     ),
     MapLocation(
@@ -442,9 +442,9 @@ class _GameScreenState extends State<GameScreen>
           'Ang Karagatang Pasipiko ang pinakamalaking karagatan sa buong mundo. Matatagpuan ito sa buong silangang bahagi ng Pilipinas.',
       funFact:
           'Alam mo ba? Dito matatagpuan ang pinakamalalim na bahagi ng dagat sa mundo kung saan kasya ang buong Bundok Everest!',
-      coordinates: '15.0° H Latitud, 135.0° S Longhitud',
-      normalizedX: 0.849,
-      normalizedY: 0.466,
+      coordinates: '20.0° H Latitud, 135.0° S Longhitud',
+      normalizedX: 0.845,
+      normalizedY: 0.350,
       color: Color(0xFF42A5F5),
     ),
     MapLocation(
