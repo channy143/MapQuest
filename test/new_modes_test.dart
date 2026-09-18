@@ -118,7 +118,7 @@ void main() {
 
       // Verify header and 3 mode cards
       expect(find.text('PUMILI NG LARO!'), findsOneWidget);
-      expect(find.text('Antas ng Misyon'), findsOneWidget);
+      expect(find.text('Hanapin ang Lokasyon!'), findsOneWidget);
       expect(find.text('Klasikong Pagsusulit'), findsOneWidget);
       expect(find.text('Coordinate Quest'), findsOneWidget);
 

@@ -33,6 +33,7 @@ class GameMission {
   final String instruction;
   final MissionType type;
   final List<String> targetLocationIds;
+  final bool requireAllTargets;
   final List<String> clues;
   final List<String> choices;
   final int correctChoiceIndex;
@@ -48,6 +49,7 @@ class GameMission {
     required this.instruction,
     required this.type,
     this.targetLocationIds = const [],
+    this.requireAllTargets = false,
     this.clues = const [],
     this.choices = const [],
     this.correctChoiceIndex = -1,
@@ -72,207 +74,214 @@ class GameMission {
 class GameMissionRegistry {
   static const List<GameBadge> availableBadges = [
     GameBadge(
-      id: 'first_discovery',
-      title: 'First Discovery',
-      subtitle: 'Unang Misyon Natapos',
-      icon: '⭐',
-    ),
-    GameBadge(
       id: 'direction_master',
       title: 'Direction Master',
-      subtitle: 'Dalubhasa sa mga Direksyon',
+      subtitle: '',
       icon: '🧭',
-    ),
-    GameBadge(
-      id: 'map_detective',
-      title: 'Map Detective',
-      subtitle: 'Nalutas ang mga Pahiwatig',
-      icon: '🔍',
-    ),
-    GameBadge(
-      id: 'asia_explorer',
-      title: 'Asia Explorer',
-      subtitle: 'Tuklas ang Timog-Silangang Asya',
-      icon: '🌏',
-    ),
-    GameBadge(
-      id: 'ultimate_explorer',
-      title: 'Ultimate Explorer',
-      subtitle: 'Nakumpleto ang Lahat ng 10 Misyon',
-      icon: '🏆',
     ),
   ];
 
   static const List<GameMission> missions = [
-    // Mission 1 – Hanapin ang Pilipinas
+    // Mission 1: Luzon, Visayas, Mindanao (tap all 3)
     GameMission(
       missionNumber: 1,
-      title: 'MISYON 1 – HANAPIN ANG PILIPINAS',
-      prompt: 'Nagsisimula ang iyong paglalakbay! Hanapin ang Pilipinas sa mapa ng Asya.',
-      instruction: 'I-tap ang alinman sa mga pulo ng Pilipinas (Luzon, Visayas, Mindanao, o Palawan) upang magpatuloy.',
+      title: 'MISYON 1',
+      prompt:
+          'Nagsimula na ang iyong paglalakbay! Sa unang misyon, hanapin ang Pilipinas sa mapa ng Timog-Silangang Asya. Nasaan ang Luzon, Visayas, at Mindanao?',
+      instruction:
+          'Pindutin ang Luzon, Visayas, at Mindanao sa mapa upang magpatuloy.',
       type: MissionType.tapMap,
-      targetLocationIds: ['luzon', 'visayas', 'mindanao', 'palawan'],
-      pointsReward: 10,
-      coinsReward: 5,
-      successMessage: 'Magaling! Nahanap mo ang kapuluan ng Pilipinas sa gitna ng Timog-Silangang Asya.',
-      failureMessage: 'Hindi iyan ang Pilipinas. Tingnan muli ang kapuluan sa silangang bahagi ng Dagat Kanlurang Pilipinas.',
-    ),
-
-    // Mission 2 – Hanapin ang Karatig-Bansa (Bisinal)
-    GameMission(
-      missionNumber: 2,
-      title: 'MISYON 2 – HANAPIN ANG KARATIG-BANSA',
-      prompt: 'May isang bansa na matatagpuan sa hilaga ng Pilipinas. Hanapin ito sa mapa.',
-      instruction: 'Tingnan ang itaas (hilaga) ng Pilipinas at i-tap ang tamang bansa o pulo.',
-      type: MissionType.tapMap,
-      targetLocationIds: ['taiwan', 'china'],
+      targetLocationIds: ['luzon', 'visayas', 'mindanao'],
+      requireAllTargets: true,
       pointsReward: 15,
       coinsReward: 5,
-      successMessage: 'TAMA! Ang Taiwan ay matatagpuan sa hilaga ng Pilipinas bilang isa sa mga pinakamalapit na karatig-lugar nito.',
-      failureMessage: 'Hindi iyan ang nasa hilaga ng Pilipinas. Tumingin sa dakong itaas mula sa Luzon.',
+      successMessage:
+          'Magaling! Nahanap mo ang tatlong pangunahing kapuluan ng Pilipinas: Luzon, Visayas, at Mindanao!',
+      failureMessage:
+          'Hindi iyan bahagi ng tatlong pulo. Pindutin ang Luzon, Visayas, o Mindanao.',
     ),
 
-    // Mission 3 – Hanapin ang Anyong Tubig (Insular)
+    // Mission 2: Taiwan (Hilaga)
+    GameMission(
+      missionNumber: 2,
+      title: 'MISYON 2',
+      prompt:
+          'Hanapin ang karatig-bansa na matatagpuan sa hilaga ng Pilipinas.',
+      instruction: 'Pindutin ito sa mapa.',
+      type: MissionType.tapMap,
+      targetLocationIds: ['taiwan'],
+      pointsReward: 15,
+      coinsReward: 5,
+      successMessage:
+          'TAMA! Ang Taiwan ang karatig-bansa na matatagpuan sa hilaga ng Pilipinas.',
+      failureMessage:
+          'Hindi iyan ang bansa sa hilaga ng Pilipinas. Tumingin sa dakong itaas mula sa Luzon.',
+    ),
+
+    // Mission 3: West Philippine Sea (Kanluran)
     GameMission(
       missionNumber: 3,
-      title: 'MISYON 3 – HANAPIN ANG ANYONG TUBIG',
-      prompt: 'Hanapin ang anyong tubig na matatagpuan sa kanluran ng Pilipinas.',
-      instruction: 'I-tap ang dagat o karagatan sa kanlurang bahagi ng ating bansa.',
+      title: 'MISYON 3',
+      prompt:
+          'Hanapin ang anyong tubig na matatagpuan sa kanluran ng Pilipinas.',
+      instruction: 'Pindutin kung saan ito sa mapa.',
       type: MissionType.tapMap,
       targetLocationIds: ['west_ph_sea'],
       pointsReward: 15,
       coinsReward: 5,
-      successMessage: 'MAGALING! Ang Dagat Kanlurang Pilipinas (West Philippine Sea) ay nasa kanluran ng ating kapuluan.',
-      failureMessage: 'Hindi iyan ang anyong tubig sa kanluran. Tumingin sa gawing kaliwa ng Luzon at Palawan.',
+      successMessage:
+          'MAGALING! Ang Dagat Kanlurang Pilipinas (West Philippine Sea) ay matatagpuan sa kanluran ng Pilipinas.',
+      failureMessage:
+          'Hindi iyan ang anyong tubig sa kanluran. Tumingin sa gawing kaliwa ng kapuluan.',
     ),
 
-    // Mission 4 – Direction Challenge
+    // Mission 4: Vietnam Direction (Kanluran)
     GameMission(
       missionNumber: 4,
-      title: 'MISYON 4 – DIRECTION CHALLENGE',
-      prompt: 'Mula sa Pilipinas, sa anong pangunahing direksyon matatagpuan ang bansang Taiwan?',
-      instruction: 'Suriin ang posisyon ng Taiwan gamit ang mapa bago pumili ng sagot:',
+      title: 'MISYON 4',
+      prompt:
+          'Mula sa Pilipinas, alamin kung anong pangunahing direksyon matatagpuan ang bansang Vietnam.',
+      instruction: 'Piliin ang tamang direksyon batay sa mapa:',
       type: MissionType.choice,
       choices: [
         'A. Hilaga (North)',
-        'B. Timog (South)',
-        'C. Silangan (East)',
-        'D. Kanluran (West)',
+        'B. Kanluran (West)',
+        'C. Timog (South)',
+        'D. Silangan (East)',
       ],
-      correctChoiceIndex: 0,
+      correctChoiceIndex: 1,
       pointsReward: 20,
       coinsReward: 5,
-      successMessage: 'TAMA! Ang Taiwan ay matatagpuan sa dakong HILAGA mula sa kapuluan ng Pilipinas.',
-      failureMessage: 'Mali ang napiling direksyon. Tandaan: ang itaas sa mapa ay Hilaga.',
+      successMessage:
+          'TAMA! Ang bansang Vietnam ay matatagpuan sa dakong KANLURAN mula sa Pilipinas.',
+      failureMessage:
+          'Mali ang direksyon. Tingnan ang mapa: ang Vietnam ay nasa gawing kaliwa o kanluran ng Pilipinas.',
     ),
 
-    // Mission 5 – Hanapin ang Lokasyon
+    // Mission 5: Indonesia (Timog)
     GameMission(
       missionNumber: 5,
-      title: 'MISYON 5 – HANAPIN ANG LOKASYON',
-      prompt: 'May kailangan kang puntahan! Ang iyong destinasyon ay isang bansang matatagpuan sa timog ng Pilipinas. Hanapin ang tamang lokasyon sa mapa.',
-      instruction: 'Suriin ang timog ng Pilipinas (sa gawing ibaba ng Mindanao at Dagat Celebes) at i-tap ito.',
+      title: 'MISYON 5',
+      prompt:
+          'May kailangan kang puntahan! Ang iyong destinasyon ay papuntang timog ng Pilipinas. Anong bansa ang iyong patutunguhan?',
+      instruction: 'Pindutin ang bansa sa timog ng Pilipinas sa mapa.',
       type: MissionType.tapMap,
       targetLocationIds: ['indonesia'],
       pointsReward: 20,
       coinsReward: 5,
-      successMessage: 'TAMA! Ang Indonesia ay ang dambuhalang kapuluang bansa sa timog ng Pilipinas.',
-      failureMessage: 'Hindi iyan ang bansa sa timog ng Pilipinas. Tumingin sa gawing ibaba ng Dagat Celebes.',
+      successMessage:
+          'TAMA! Ang Indonesia ang bansang iyong patutunguhan sa timog ng Pilipinas.',
+      failureMessage:
+          'Hindi iyan ang bansa sa timog ng Pilipinas. Tumingin sa ibaba ng Mindanao at Dagat Celebes.',
     ),
 
-    // Mission 6 – Lost Explorer (Progressive Clues)
+    // Mission 6: China (Progressive Clues)
     GameMission(
       missionNumber: 6,
-      title: 'MISYON 6 – LOST EXPLORER',
-      prompt: 'Nawawala ang MapQuest Explorer! Gamitin ang mga pahiwatig upang matukoy kung saang lugar siya naroroon.',
-      instruction: 'Basahin ang mga pahiwatig at i-tap ang tamang lugar sa mapa:',
+      title: 'MISYON 6',
+      prompt:
+          'Nawawala ang ibang MapQuest Explorer! Gamitin ang mga pahiwatig upang matukoy kung saang lugar siya naroroon.',
+      instruction:
+          'Basahin ang mga pahiwatig at pindutin ang tamang lugar sa mapa:',
       type: MissionType.cluesMap,
       clues: [
-        'Pahiwatig 1: Ako ay nasa hilaga ng Pilipinas.',
-        'Pahiwatig 2: Ako ay isang isla.',
-        'Pahiwatig 3: Ako ay malapit sa mainland China.',
+        'Pahiwatig 1: Ako ay nasa hilagang-kanluran ng Pilipinas',
+        'Pahiwatig 2: Napakalaki ng bansang ito',
+        'Pahiwatig 3: Isa ito sa pinakalumang bansa na may mahabang kasaysayan',
       ],
-      targetLocationIds: ['taiwan'],
+      targetLocationIds: ['china'],
       pointsReward: 25,
       coinsReward: 10,
-      successMessage: 'MAGALING! Natukoy mo ang Taiwan gamit ang tatlong pahiwatig ng Lost Explorer!',
-      failureMessage: 'Hindi iyan ang lugar na inilalarawan ng mga pahiwatig. Suriing mabuti ang isla sa hilaga.',
+      successMessage:
+          'MAGALING! Natukoy mo ang bansang China gamit ang mga pahiwatig!',
+      failureMessage:
+          'Hindi iyan ang lugar na inilalarawan ng mga pahiwatig. Suriin ang malaking bansa sa hilagang-kanluran.',
     ),
 
-    // Mission 7 – Plan Your Journey
+    // Mission 7: Journey to Palau (Timog-silangan)
     GameMission(
       missionNumber: 7,
-      title: 'MISYON 7 – PLAN YOUR JOURNEY',
-      prompt: 'Nasa Pilipinas ka at kailangan mong maglayag patungong Taiwan. Sa anong direksyon ka dapat magtungo?',
-      instruction: 'Gamitin ang mapa at compass upang itakda ang direksyon ng barko:',
+      title: 'MISYON 7',
+      prompt:
+          'Nasa Pilipinas ka at kailangan mong maglayag patungong Palau. Sa anong direksyon ka dapat magtungo?',
+      instruction: 'Piliin ang tamang direksyon batay sa mapa:',
       type: MissionType.choice,
       choices: [
-        '🧭 Hilaga (North)',
-        '🧭 Timog (South)',
-        '🧭 Silangan (East)',
-        '🧭 Kanluran (West)',
+        'A. Hilagang-kanluran (Northwest)',
+        'B. Hilagang-silangan (Northeast)',
+        'C. Timog-silangan (Southeast)',
+        'D. Timog-kanluran (Southwest)',
       ],
-      correctChoiceIndex: 0,
+      correctChoiceIndex: 2,
       pointsReward: 20,
       coinsReward: 5,
-      successMessage: 'TAMA! Naglayag ka patungong Hilaga at ligtas na nakarating sa daungan ng Taiwan!',
-      failureMessage: 'Maling ruta! Kung doon ka maglalayag, hindi ka makararating sa Taiwan.',
+      successMessage:
+          'TAMA! Ang Palau ay matatagpuan sa Timog-Silangan ng Pilipinas sa Karagatang Pasipiko.',
+      failureMessage:
+          'Maling direksyon! Ang Palau ay nasa dakong timog-silangan mula sa Visayas at Mindanao.',
     ),
 
-    // Mission 8 – Map Comparison
+    // Mission 8: Basi Channel
     GameMission(
       missionNumber: 8,
-      title: 'MISYON 8 – MAP COMPARISON',
-      prompt: 'Alin sa dalawang bansang ito ang mas malapit sa Pilipinas batay sa mapa?',
-      instruction: 'Ihambing ang agwat at distansya ng bawat isa mula sa Pilipinas:',
+      title: 'MISYON 8',
+      prompt:
+          'Alamin kung anong karagatan o anyong tubig ang nasa hilagang bahagi ng Pilipinas.',
+      instruction: 'Piliin ang tamang anyong tubig:',
       type: MissionType.choice,
       choices: [
-        '🇹🇼 Taiwan',
-        '🇯🇵 Hapon (Japan)',
+        'A. Basi Channel',
+        'B. Dagat Celebes',
+        'C. Dagat Sulu',
+        'D. Karagatang Pasipiko',
       ],
       correctChoiceIndex: 0,
       pointsReward: 25,
       coinsReward: 5,
-      successMessage: 'TAMA! Ang Taiwan ang pinakamalapit na karatig-lugar sa hilaga, higit na mas malapit kaysa sa Hapon.',
-      failureMessage: 'Hindi iyon. Mas malayo ang Hapon; ang Taiwan ang mas malapit na bansa sa hilaga.',
+      successMessage:
+          'TAMA! Ang Basi Channel ang anyong tubig sa hilagang bahagi ng Pilipinas na naghihiwalay sa Pilipinas at Taiwan.',
+      failureMessage:
+          'Mali ang sagot. Ang Basi Channel ang anyong tubig sa dakong hilaga ng Pilipinas.',
     ),
 
-    // Mission 9 – Geography Detective
+    // Mission 9: Thailand
     GameMission(
       missionNumber: 9,
-      title: 'MISYON 9 – GEOGRAPHY DETECTIVE',
-      prompt: 'May nawawalang lokasyon sa mapa! Tulungan ang MapQuest Explorer na hanapin ito gamit ang mga pahiwatig.',
-      instruction: 'Suriin ang mga detalyadong pahiwatig at i-tap ang tamang bansa sa mapa:',
-      type: MissionType.cluesMap,
-      clues: [
-        'Clue 1: Ako ay nasa katimugang bahagi ng Tangway ng Indochina sa kanluran ng Pilipinas.',
-        'Clue 2: Dito matatagpuan ang tanyag na Angkor Wat at ang Lawa ng Tonle Sap.',
-        'Clue 3: Karatig-bansa ako ng Thailand at Vietnam.',
-      ],
-      targetLocationIds: ['cambodia'],
-      pointsReward: 30,
-      coinsReward: 10,
-      successMessage: '🎉 MYSTERY SOLVED! Magaling, Explorer! Natukoy mo ang Kambodya (Cambodia) gamit ang mga heograpikal na pahiwatig.',
-      failureMessage: 'Hindi iyan ang hinahanap. Tandaan: tahanan ito ng Angkor Wat at Tonle Sap.',
+      title: 'MISYON 9',
+      prompt:
+          'Anong bansa ang pinapalibutan ng Vietnam, Myanmar, Cambodia, at Laos?',
+      instruction: 'Pindutin ang bansang ito sa mapa:',
+      type: MissionType.tapMap,
+      targetLocationIds: ['thailand'],
+      pointsReward: 25,
+      coinsReward: 5,
+      successMessage:
+          'TAMA! Ang Thailand ang bansang napalilibutan ng Vietnam, Myanmar, Cambodia, at Laos!',
+      failureMessage:
+          'Hindi iyan ang bansa. Suriin ang bansa sa gitnang bahagi ng Tangway ng Indochina.',
     ),
 
-    // Mission 10 – Absolute Location
+    // Mission 10: Absolute Location of Philippines
     GameMission(
       missionNumber: 10,
-      title: 'MISYON 10 – ABSOLUTE LOCATION',
-      prompt: 'Ang isang lugar ay maaaring matukoy gamit ang latitude at longitude. Ano ang absolute location ng Pilipinas sa globo?',
-      instruction: 'Piliin ang wastong coordinate ng Pilipinas:',
+      title: 'MISYON 10',
+      prompt:
+          'Sa iyong panghuling misyon, tukuyin kung ano ang tiyak na lokasyon ng Pilipinas sa mapa.',
+      instruction:
+          'Piliin ang tamang tiyak na lokasyon (absolute location) ng Pilipinas:',
       type: MissionType.choice,
       choices: [
-        'A. 4° hanggang 21° Hilagang Latitud (N), 116° hanggang 127° Silangang Longhitud (E)',
-        'B. 40° hanggang 55° Hilagang Latitud (N), 90° hanggang 105° Kanlurang Longhitud (W)',
-        'C. 30° hanggang 45° Timog Latitud (S), 130° hanggang 150° Silangang Longhitud (E)',
+        'A. 4° hanggang 21° Hilagang Latitud (H), 116° hanggang 127° Silangang Longhitud (S)',
+        'B. 40° hanggang 55° Hilagang Latitud (H), 90° hanggang 105° Kanlurang Longhitud (K)',
+        'C. 30° hanggang 45° Timog Latitud (T), 130° hanggang 150° Silangang Longhitud (S)',
       ],
       correctChoiceIndex: 0,
       pointsReward: 35,
       coinsReward: 15,
-      successMessage: 'NAPAKAHUSAY! Natukoy mo ang eksaktong absolute coordinates ng Pilipinas sa buong daigdig!',
-      failureMessage: 'Hindi iyan ang tamang coordinate. Ang Pilipinas ay nasa pagitan ng 4°-21° N latitud at 116°-127° E longhitud.',
+      successMessage:
+          'NAPAKAHUSAY! Natukoy mo ang tiyak na lokasyon ng Pilipinas (4°-21° H Latitud, 116°-127° S Longhitud) at napagtagumpayan ang lahat ng 10 misyon!',
+      failureMessage:
+          'Hindi iyan ang tamang tiyak na lokasyon. Ang Pilipinas ay nasa 4°-21° Hilagang Latitud at 116°-127° Silangang Longhitud.',
     ),
   ];
 }

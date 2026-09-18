@@ -124,14 +124,14 @@ class GameModePickerModal extends StatelessWidget {
                         ),
                         const SizedBox(height: 18),
 
-                        // Option 1: Antas ng Misyon
+                        // Option 1: Hanapin ang Lokasyon!
                         _ModeOptionCard(
                           icon: Icons.explore_rounded,
                           accentColor: const Color(0xFF00E5FF),
                           tagText: 'TUKLASIN!',
-                          title: 'Antas ng Misyon',
+                          title: 'Hanapin ang Lokasyon!',
                           description:
-                              'Tapusin ang 10 misyon at hanapin ang mga tamang sagot sa mapa!',
+                              'Pindutin sa mapa ang ibinigay na lugar at tapusin ang 10 misyon!',
                           isCompact: isCompact,
                           onTap: () => onSelectMode(GameSubModeSelection.level),
                         ),

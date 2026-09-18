@@ -154,6 +154,7 @@ class _GameScreenState extends State<GameScreen>
   int _coins = 0;
   int _revealedCluesCount = 1;
   final Set<String> _unlockedBadgeIds = {};
+  final Set<String> _tappedMissionTargets = {};
   bool _isGameOver = false;
   bool _isGameCompleted = false;
 
@@ -343,8 +344,8 @@ class _GameScreenState extends State<GameScreen>
       funFact:
           'Alam mo ba na sa Malaysia matatagpuan ang Rafflesia, ang pinakamalaking bulaklak sa buong mundo. Kaya nitong lumaki nang hanggang tatlong talampakan (3 feet) at kasingbigat ng isang maliit na aso! Ang nakakatuwa (at medyo nakakadiri), mabaho ang amoy nito na parang bulok na karne, kaya tinatawag din itong "corpse flower".',
       coordinates: '4.2° H Latitud, 102.0° S Longhitud',
-      normalizedX: 0.445,
-      normalizedY: 0.635,
+      normalizedX: 0.236,
+      normalizedY: 0.608,
       color: Color(0xFF26A69A),
     ),
     MapLocation(
@@ -372,7 +373,7 @@ class _GameScreenState extends State<GameScreen>
           'Alam mo ba na ang Brunei ay isa sa pinakamayamang bansa sa Asya dahil sa langis? Libre ang edukasyon at pagpapagamot para sa lahat ng kanilang mamamayan!',
       coordinates: '4.5° H Latitud, 114.7° S Longhitud',
       normalizedX: 0.495,
-      normalizedY: 0.588,
+      normalizedY: 0.600,
       color: Color(0xFFFDD835),
     ),
     MapLocation(
@@ -905,7 +906,32 @@ class _GameScreenState extends State<GameScreen>
     if (mission.type == MissionType.tapMap ||
         mission.type == MissionType.cluesMap) {
       if (mission.isTargetLocation(location.id)) {
-        _handleCorrectAnswer(viewportWidth, viewportHeight);
+        if (mission.requireAllTargets) {
+          final locId = location.id.toLowerCase();
+          if (!_tappedMissionTargets.contains(locId)) {
+            _tappedMissionTargets.add(locId);
+            AudioManager.instance.playCorrect();
+            if (_tappedMissionTargets.length >= mission.targetLocationIds.length) {
+              _handleCorrectAnswer(viewportWidth, viewportHeight);
+            } else {
+              setState(() {});
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Magaling! Nahanap mo ang ${location.title} (${_tappedMissionTargets.length}/${mission.targetLocationIds.length}). Pindutin ang iba pang bahagi!',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  backgroundColor: const Color(0xFF00897B),
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          }
+        } else {
+          _handleCorrectAnswer(viewportWidth, viewportHeight);
+        }
       } else {
         _handleWrongAnswer(mission.failureMessage, viewportWidth, viewportHeight);
       }
@@ -1008,24 +1034,18 @@ class _GameScreenState extends State<GameScreen>
     final List<GameBadge> newlyUnlockedBadges = [];
     void checkBadge(String id) {
       if (!_unlockedBadgeIds.contains(id)) {
-        _unlockedBadgeIds.add(id);
-        final badge = GameMissionRegistry.availableBadges
-            .firstWhere((b) => b.id == id);
-        newlyUnlockedBadges.add(badge);
+        final matches = GameMissionRegistry.availableBadges.where((b) => b.id == id);
+        if (matches.isNotEmpty) {
+          _unlockedBadgeIds.add(id);
+          newlyUnlockedBadges.add(matches.first);
+        }
       }
     }
 
-    if (mission.missionNumber == 1) checkBadge('first_discovery');
-    if (mission.missionNumber == 4 || mission.missionNumber == 7) {
+    if (mission.missionNumber == 4 ||
+        mission.missionNumber == 7 ||
+        mission.missionNumber == 10) {
       checkBadge('direction_master');
-    }
-    if (mission.missionNumber == 6 || mission.missionNumber == 9) {
-      checkBadge('map_detective');
-    }
-    if (mission.missionNumber == 8) checkBadge('asia_explorer');
-    if (mission.missionNumber == 10) {
-      checkBadge('asia_explorer');
-      checkBadge('ultimate_explorer');
     }
 
     final isLastMission =
@@ -1048,6 +1068,7 @@ class _GameScreenState extends State<GameScreen>
             _currentMissionIndex++;
             _revealedCluesCount = 1;
             _selectedLocation = null;
+            _tappedMissionTargets.clear();
           });
           _resetZoom(viewportWidth, viewportHeight);
         },
@@ -1083,6 +1104,7 @@ class _GameScreenState extends State<GameScreen>
       _coins = 0;
       _revealedCluesCount = 1;
       _unlockedBadgeIds.clear();
+      _tappedMissionTargets.clear();
       _isGameOver = false;
       _isGameCompleted = false;
       _selectedLocation = null;
@@ -1504,6 +1526,7 @@ class _GameScreenState extends State<GameScreen>
                         key: ValueKey('mission_panel_$_currentMissionIndex'),
                         mission: _currentMission,
                         revealedCluesCount: _revealedCluesCount,
+                        tappedTargets: _tappedMissionTargets,
                         isCompact: isCompact,
                         onRevealNextClue: () {
                           setState(() {
@@ -3347,9 +3370,9 @@ class _GlassWelcomeModal extends StatelessWidget {
     final maxWidth = screen.width > 700 ? 580.0 : screen.width * 0.90;
     final maxHeight = screen.height * 0.86;
 
-    String title = 'MAPQUEST EXPLORER';
+    String title = 'HANAPIN ANG LOKASYON!';
     Color titleColor = Colors.amber;
-    String tag = '🎮 ANTAS NG MISYON';
+    String tag = '🎮 HANAPIN ANG LOKASYON!';
     Color tagColor = Colors.amber;
 
     if (isCoordinateMode) {
@@ -3373,7 +3396,7 @@ class _GlassWelcomeModal extends StatelessWidget {
           'Handa ka na bang tuklasin ang kinalalagyan ng Pilipinas sa mapa ng Asya?\n\nSa araling ito, aalamin natin kung nasaan ang Pilipinas, ang mga karatig-bansa nito, at ang mga anyong tubig na nakapaligid dito. Handa ka na ba?\n\nPindutin ang “Magsimula” kung ikaw ay handa na sa pagtuklas!';
     } else {
       welcomeText =
-          '“Handa ka na bang maging isang MapQuest Explorer?”\n\n“Gamitin ang iyong mapa upang tuklasin ang lokasyon ng Pilipinas sa Asya, hanapin ang mga karatig-bansa, tukuyin ang mga anyong tubig, at lutasin ang mga hamon!”\n\n“Bawat tamang sagot ay magbibigay sa iyo ng puntos at gantimpala.”';
+          'Handa ka na bang maging isang MapQuest Explorer?\n\nGamitin ang mapa upang malutas ang mga hamon! Basahin nang mabuti ang bawat panuto at tanong bago pumindot.\n\nBawat tamang sagot ay may puntos at gantimpala. Kaya mag-isip nang mabuti, tuklasin ang mapa, at galingan sa bawat hamon!\n\nKaya mo ’yan, MapQuest Explorer!';
     }
 
     String buttonLabel;
@@ -3822,6 +3845,7 @@ class _GameMissionPanel extends StatelessWidget {
     super.key,
     required this.mission,
     required this.revealedCluesCount,
+    this.tappedTargets = const {},
     required this.isCompact,
     required this.onRevealNextClue,
     required this.onSelectChoice,
@@ -3829,6 +3853,7 @@ class _GameMissionPanel extends StatelessWidget {
 
   final GameMission mission;
   final int revealedCluesCount;
+  final Set<String> tappedTargets;
   final bool isCompact;
   final VoidCallback onRevealNextClue;
   final ValueChanged<int> onSelectChoice;
@@ -4026,6 +4051,63 @@ class _GameMissionPanel extends StatelessWidget {
                       ),
                   ],
 
+                  // Target chips for requireAllTargets missions (e.g. Misyon 1)
+                  if (mission.requireAllTargets) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        for (final targetId in mission.targetLocationIds) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: tappedTargets.contains(targetId.toLowerCase())
+                                  ? Colors.green.withValues(alpha: 0.32)
+                                  : Colors.white.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: tappedTargets.contains(targetId.toLowerCase())
+                                    ? Colors.greenAccent
+                                    : Colors.white30,
+                                width: 1.2,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  tappedTargets.contains(targetId.toLowerCase())
+                                      ? Icons.check_circle_rounded
+                                      : Icons.radio_button_unchecked_rounded,
+                                  size: 15,
+                                  color: tappedTargets.contains(targetId.toLowerCase())
+                                      ? Colors.greenAccent
+                                      : Colors.white70,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  '${targetId[0].toUpperCase()}${targetId.substring(1)}',
+                                  style: TextStyle(
+                                    fontSize: isCompact ? 11.5 : 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: tappedTargets.contains(targetId.toLowerCase())
+                                        ? Colors.greenAccent
+                                        : Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+
                   // Map tap prompt hint for tapMap
                   if (mission.type == MissionType.tapMap ||
                       mission.type == MissionType.cluesMap) ...[
@@ -4054,7 +4136,7 @@ class _GameMissionPanel extends StatelessWidget {
                           const SizedBox(width: 8),
                           Flexible(
                             child: Text(
-                              'Pumili at i-tap ang tamang bilog o bansa sa mapa sa itaas',
+                              'Pumili at pindutin ang tamang bilog o bansa sa mapa sa itaas',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: isCompact ? 12 : 13.5,
@@ -4344,13 +4426,14 @@ class _MissionFeedbackDialog extends StatelessWidget {
                                   color: Colors.amberAccent,
                                 ),
                               ),
-                              Text(
-                                badge.subtitle,
-                                style: TextStyle(
-                                  fontSize: 10.5,
-                                  color: Colors.white.withValues(alpha: 0.85),
+                              if (badge.subtitle.isNotEmpty)
+                                Text(
+                                  badge.subtitle,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: Colors.white.withValues(alpha: 0.85),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ],
@@ -4689,13 +4772,14 @@ class _MissionCompleteDialog extends StatelessWidget {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(
-                                    badge.subtitle,
-                                    style: TextStyle(
-                                      fontSize: 9.5,
-                                      color: Colors.white.withValues(alpha: 0.70),
+                                  if (badge.subtitle.isNotEmpty)
+                                    Text(
+                                      badge.subtitle,
+                                      style: TextStyle(
+                                        fontSize: 9.5,
+                                        color: Colors.white.withValues(alpha: 0.70),
+                                      ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ],

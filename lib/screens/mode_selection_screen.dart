@@ -188,7 +188,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
     switch (selection) {
       case GameSubModeSelection.level:
         _startModeTransition(
-          modeName: 'Antas ng Misyon',
+          modeName: 'Hanapin ang Lokasyon!',
           destinationBuilder: (context) => GameScreen(
             selectedMode: 'mode ng laro',
             gameSubMode: GameSubMode.level,
