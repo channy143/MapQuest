@@ -359,6 +359,76 @@ void main() {
       expect(find.text('ALAM MO BA? (FUN FACT)'), findsNothing);
     });
 
+    testWidgets('Location info card features expandable size, zoomable fonts, light background, and black text',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: GameScreen(selectedMode: 'mode ng pagkatuto'),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
+
+      // Dismiss welcome modal
+      await tester.tap(find.byWidgetPredicate(
+        (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+      ));
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+
+      // Tap on Luzon pin
+      final luzonPin = find.byKey(const ValueKey('pin_luzon'));
+      expect(luzonPin, findsOneWidget);
+      await tester.tap(luzonPin);
+      await tester.pump(const Duration(milliseconds: 800));
+
+      // Verify pure black text across location description elements
+      final descWidget = tester.widget<Text>(
+        find.textContaining('pinakamalaki at pinakamataong pulo'),
+      );
+      expect(descWidget.style?.color, equals(Colors.black));
+
+      final funFactFinder = find.byWidgetPredicate(
+        (w) =>
+            w is Text &&
+            w.data != null &&
+            w.data!.contains('Bulkang Taal'),
+      );
+      expect(funFactFinder, findsOneWidget);
+      final funFactWidget = tester.widget<Text>(funFactFinder);
+      expect(funFactWidget.style?.color, equals(Colors.black));
+
+      // Check font size zoom button
+      final fontZoomBtn = find.byTooltip('Palakihin ang Font (100%)');
+      expect(fontZoomBtn, findsOneWidget);
+      await tester.tap(fontZoomBtn);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byTooltip('Palakihin ang Font (125%)'), findsOneWidget);
+
+      // Check expand card button
+      final expandBtn = find.byTooltip('Palakihin ang Card');
+      expect(expandBtn, findsOneWidget);
+      expect(find.text('Palakihin'), findsOneWidget);
+
+      await tester.tap(expandBtn);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byTooltip('Paliitin ang Card'), findsOneWidget);
+      expect(find.text('Paliitin'), findsOneWidget);
+
+      // Tap BUMALIK SA BUONG MAPA to dismiss
+      await tester.tap(find.text('BUMALIK SA BUONG MAPA'));
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.text('ALAM MO BA? (FUN FACT)'), findsNothing);
+    });
+
     testWidgets('Screen coordinate badges overlay renders when grid is enabled',
         (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1280, 800);

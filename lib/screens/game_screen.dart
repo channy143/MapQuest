@@ -2160,8 +2160,9 @@ class _CalibrationControlBar extends StatelessWidget {
 }
 
 /// Information card displayed when a user taps a map location.
-/// Designed for Grade 4 learners: light high-contrast background, dark readable text,
-/// half-screen height, and close button that zooms out back to the full map.
+/// Designed for Grade 4 learners: light high-contrast background, pure black readable text,
+/// half-phone screen height with tap-to-expand feature, zoomable fonts,
+/// and close button that zooms out back to the full map.
 class _LocationInfoCard extends StatefulWidget {
   const _LocationInfoCard({
     required this.location,
@@ -2181,11 +2182,33 @@ class _LocationInfoCard extends StatefulWidget {
 
 class _LocationInfoCardState extends State<_LocationInfoCard> {
   final ScrollController _scrollController = ScrollController();
+  bool _isExpanded = false;
+  double _fontScale = 1.0; // Cycles: 1.0x -> 1.25x -> 1.5x
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _cycleFontScale() {
+    AudioManager.instance.playClick();
+    setState(() {
+      if (_fontScale == 1.0) {
+        _fontScale = 1.25;
+      } else if (_fontScale == 1.25) {
+        _fontScale = 1.5;
+      } else {
+        _fontScale = 1.0;
+      }
+    });
+  }
+
+  void _toggleExpanded() {
+    AudioManager.instance.playClick();
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
   }
 
   @override
@@ -2195,248 +2218,353 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
     final onClose = widget.onClose;
 
     final screen = MediaQuery.sizeOf(context);
-    final maxWidth = screen.width > 680 ? 560.0 : screen.width * 0.94;
-    // Mobile modal takes about half the phone height (0.52) comfortably
-    final maxHeight = screen.height * (isCompact ? 0.52 : 0.46);
+    final maxWidth = screen.width > 680 ? 600.0 : screen.width * 0.94;
+    // Mobile modal takes about half the phone height (0.52) comfortably by default
+    // When expanded ("modako sya inig ka tap bitaw para managko ang fonts"), it expands to 0.82
+    final defaultHeight = screen.height * (isCompact ? 0.52 : 0.48);
+    final expandedHeight = screen.height * (isCompact ? 0.82 : 0.74);
+    final currentMaxHeight = _isExpanded ? expandedHeight : defaultHeight;
 
-    return ConstrainedBox(
+    // Font scaling: incorporates user zoom level & additional expansion boost
+    final double expansionMultiplier = _isExpanded ? 1.15 : 1.0;
+    final double effectiveFontScale = _fontScale * expansionMultiplier;
+
+    final double titleFontSize =
+        (isCompact ? 46.0 : 54.0) * (_isExpanded ? 1.08 : 1.0);
+    final double categoryFontSize = isCompact ? 12.0 : 13.0;
+    final double descFontSize = (isCompact ? 20.0 : 22.0) * effectiveFontScale;
+    final double funFactHeaderFontSize =
+        (isCompact ? 13.5 : 14.5) * _fontScale.clamp(1.0, 1.25);
+    final double funFactBodyFontSize =
+        (isCompact ? 17.5 : 19.0) * effectiveFontScale;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
       constraints: BoxConstraints(
         maxWidth: maxWidth,
-        maxHeight: maxHeight,
+        maxHeight: currentMaxHeight,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(
-            color: location.color.withValues(alpha: 0.85),
-            width: 2.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 30,
-              spreadRadius: 2,
-              offset: const Offset(0, 10),
-            ),
-          ],
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: location.color.withValues(alpha: 0.90),
+          width: 2.4,
         ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            isCompact ? 16 : 20,
-            isCompact ? 12 : 16,
-            isCompact ? 16 : 20,
-            isCompact ? 12 : 14,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.35),
+            blurRadius: 30,
+            spreadRadius: 2,
+            offset: const Offset(0, 10),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Action Row: Category Pill & Close / Zoom-out Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Category Pill
-                  Flexible(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isCompact ? 8 : 10,
-                        vertical: isCompact ? 3 : 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: location.color.withValues(alpha: 0.18),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: location.color,
-                          width: 1.2,
-                        ),
-                      ),
-                      child: Text(
-                        location.category.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: isCompact ? 10.5 : 11.5,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF0F172A),
-                          letterSpacing: 0.5,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-
-                  // Close Button (Tapping this closes card and zooms out to full map)
-                  IconButton(
-                    icon: const Icon(
-                      Icons.close_rounded,
-                      color: Color(0xFF475569),
-                      size: 22,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    tooltip: 'Isara at Mag-zoom out',
-                    onPressed: () {
-                      AudioManager.instance.playClick();
-                      onClose();
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: isCompact ? 4 : 8),
-
-              // Title in Jomhuria Typography (High-contrast dark text)
-              Text(
-                location.title,
-                style: TextStyle(
-                  fontFamily: 'Jomhuria',
-                  fontSize: isCompact ? 40 : 48,
-                  color: const Color(0xFF0F172A),
-                  height: 0.88,
-                  letterSpacing: 1.2,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: isCompact ? 6 : 10),
-
-              // Scrollable Description & Fun Fact Box (Dark text on light background)
-              Flexible(
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context).copyWith(
-                    dragDevices: {
-                      PointerDeviceKind.touch,
-                      PointerDeviceKind.mouse,
-                      PointerDeviceKind.trackpad,
-                      PointerDeviceKind.stylus,
-                      PointerDeviceKind.unknown,
-                    },
-                  ),
-                  child: RawScrollbar(
-                    controller: _scrollController,
-                    thumbVisibility: true,
-                    thickness: 4.0,
-                    radius: const Radius.circular(4),
-                    thumbColor: const Color(0xFF94A3B8),
-                    interactive: true,
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Educational Description with high contrast black/dark slate text
-                          Text(
-                            location.description,
-                            style: TextStyle(
-                              fontSize: isCompact ? 16.0 : 17.5,
-                              color: const Color(0xFF1E293B),
-                              height: 1.45,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Fun Fact Box with warm light amber background & black text
-                          Container(
-                            padding: EdgeInsets.all(isCompact ? 12 : 14),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFFBEB),
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: const Color(0xFFF59E0B),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.lightbulb_rounded,
-                                      color: Color(0xFFD97706),
-                                      size: 18,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Flexible(
-                                      child: Text(
-                                        'ALAM MO BA? (FUN FACT)',
-                                        style: TextStyle(
-                                          fontSize:
-                                              isCompact ? 11.5 : 12.5,
-                                          fontWeight: FontWeight.w800,
-                                          color: const Color(0xFFB45309),
-                                          letterSpacing: 0.5,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  location.funFact,
-                                  style: TextStyle(
-                                    fontSize:
-                                        isCompact ? 14.5 : 15.5,
-                                    color: const Color(0xFF1E293B),
-                                    height: 1.42,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: isCompact ? 10 : 12),
-
-              // Bottom Action: Reset Zoom / Return to Full Map
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F172A),
-                    foregroundColor: Colors.white,
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          isCompact ? 16 : 20,
+          isCompact ? 12 : 16,
+          isCompact ? 16 : 20,
+          isCompact ? 12 : 14,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top Action Row: Category Pill, Font Zoom, Card Expand/Collapse, and Close Button
+            Row(
+              children: [
+                // Category Pill (High contrast black text on category tint)
+                Flexible(
+                  child: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: isCompact ? 14 : 18,
-                      vertical: isCompact ? 8 : 10,
+                      horizontal: isCompact ? 8 : 10,
+                      vertical: isCompact ? 3.5 : 4.5,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    decoration: BoxDecoration(
+                      color: location.color.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: location.color,
+                        width: 1.2,
+                      ),
                     ),
-                    elevation: 2,
+                    child: Text(
+                      location.category.toUpperCase(),
+                      style: TextStyle(
+                        fontSize: categoryFontSize,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black,
+                        letterSpacing: 0.5,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                ),
+                const SizedBox(width: 8),
+
+                // Font Zoom Button (Cycles: 100% -> 125% -> 150%)
+                IconButton(
+                  icon: Icon(
+                    _fontScale == 1.5
+                        ? Icons.text_fields_rounded
+                        : Icons.format_size_rounded,
+                    color: _fontScale > 1.0
+                        ? const Color(0xFF2563EB)
+                        : Colors.black,
+                    size: isCompact ? 22 : 24,
+                  ),
+                  tooltip:
+                      'Palakihin ang Font (${(_fontScale * 100).toInt()}%)',
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  constraints: const BoxConstraints(),
+                  onPressed: _cycleFontScale,
+                ),
+
+                // Expand / Collapse Card Button (Toggle ~half screen vs enlarged)
+                IconButton(
+                  icon: Icon(
+                    _isExpanded
+                        ? Icons.fullscreen_exit_rounded
+                        : Icons.fullscreen_rounded,
+                    color: _isExpanded
+                        ? const Color(0xFF2563EB)
+                        : Colors.black,
+                    size: isCompact ? 24 : 26,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  constraints: const BoxConstraints(),
+                  tooltip: _isExpanded
+                      ? 'Paliitin ang Card'
+                      : 'Palakihin ang Card',
+                  onPressed: _toggleExpanded,
+                ),
+
+                // Close Button (Tapping this closes card and zooms out to full map)
+                IconButton(
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: Colors.black,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  tooltip: 'Isara at Mag-zoom out',
                   onPressed: () {
                     AudioManager.instance.playClick();
                     onClose();
                   },
-                  icon: Icon(
-                    Icons.zoom_out_map_rounded,
-                    size: isCompact ? 15 : 17,
+                ),
+              ],
+            ),
+            SizedBox(height: isCompact ? 4 : 8),
+
+            // Title in Jomhuria Typography (High-contrast pure black text, tap to toggle size)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _toggleExpanded,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      location.title,
+                      style: TextStyle(
+                        fontFamily: 'Jomhuria',
+                        fontSize: titleFontSize,
+                        color: Colors.black,
+                        height: 0.88,
+                        letterSpacing: 1.2,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  label: Text(
-                    'BUMALIK SA BUONG MAPA',
-                    style: TextStyle(
-                      fontSize: isCompact ? 11.5 : 12.5,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                  // Subtle tap-to-expand / collapse hint pill
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _isExpanded
+                              ? Icons.unfold_less_rounded
+                              : Icons.unfold_more_rounded,
+                          size: 13,
+                          color: const Color(0xFF475569),
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          _isExpanded ? 'Paliitin' : 'Palakihin',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Color(0xFF475569),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: isCompact ? 6 : 10),
+
+            // Scrollable Description & Fun Fact Box (Light background with pure black text)
+            Flexible(
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.trackpad,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.unknown,
+                  },
+                ),
+                child: RawScrollbar(
+                  controller: _scrollController,
+                  thumbVisibility: true,
+                  thickness: 4.0,
+                  radius: const Radius.circular(4),
+                  thumbColor: const Color(0xFF94A3B8),
+                  interactive: true,
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Educational Description with clean light background & pure black text
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(isCompact ? 12 : 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Text(
+                            location.description,
+                            style: TextStyle(
+                              fontSize: descFontSize,
+                              color: Colors.black,
+                              height: 1.48,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Fun Fact Box with warm light amber background & pure black text
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(isCompact ? 12 : 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFFBEB),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: const Color(0xFFF59E0B),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.lightbulb_rounded,
+                                    color: Color(0xFFD97706),
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      'ALAM MO BA? (FUN FACT)',
+                                      style: TextStyle(
+                                        fontSize: funFactHeaderFontSize,
+                                        fontWeight: FontWeight.w800,
+                                        color: const Color(0xFFB45309),
+                                        letterSpacing: 0.5,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                location.funFact,
+                                style: TextStyle(
+                                  fontSize: funFactBodyFontSize,
+                                  color: Colors.black,
+                                  height: 1.42,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: isCompact ? 10 : 12),
+
+            // Bottom Action: Reset Zoom / Return to Full Map
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0F172A),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isCompact ? 14 : 18,
+                    vertical: isCompact ? 8 : 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 2,
+                ),
+                onPressed: () {
+                  AudioManager.instance.playClick();
+                  onClose();
+                },
+                icon: Icon(
+                  Icons.zoom_out_map_rounded,
+                  size: isCompact ? 15 : 17,
+                ),
+                label: Text(
+                  'BUMALIK SA BUONG MAPA',
+                  style: TextStyle(
+                    fontSize: isCompact ? 11.5 : 12.5,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
