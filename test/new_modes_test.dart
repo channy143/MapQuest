@@ -312,4 +312,95 @@ void main() {
       expect(unlockedInStorage.contains('luzon'), isTrue);
     });
   });
+
+  group('Location Card Zoom-Out & Screen Coordinate Badges', () {
+    testWidgets('Tapping location card close (X) button dismisses card and resets zoom',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: GameScreen(selectedMode: 'mode ng pagkatuto'),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
+
+      // Dismiss welcome modal
+      await tester.tap(find.byWidgetPredicate(
+        (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+      ));
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+
+      // Tap on Luzon pin
+      final luzonPin = find.byKey(const ValueKey('pin_luzon'));
+      expect(luzonPin, findsOneWidget);
+      await tester.tap(luzonPin);
+      await tester.pump(const Duration(milliseconds: 800));
+
+      // Location card is visible with close button and without font-scaling buttons
+      final closeButton = find.byIcon(Icons.close_rounded);
+      expect(closeButton, findsOneWidget);
+      expect(find.text('A-'), findsNothing);
+      expect(find.text('A+'), findsNothing);
+
+      // Tap close button (X)
+      await tester.tap(closeButton);
+      await tester.pump(const Duration(milliseconds: 600));
+
+      // Card is dismissed and zoom is reset
+      expect(find.text('ALAM MO BA? (FUN FACT)'), findsNothing);
+    });
+
+    testWidgets('Screen coordinate badges overlay renders when grid is enabled',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: GameScreen(selectedMode: 'mode ng pagkatuto'),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
+
+      // Dismiss welcome modal
+      await tester.tap(find.byWidgetPredicate(
+        (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+      ));
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+
+      // Grid toggle button exists
+      final gridToggle = find.byIcon(Icons.grid_on_rounded);
+      expect(gridToggle, findsOneWidget);
+
+      // Grid is ON by default in GameScreen
+      expect(find.text('GRID'), findsOneWidget);
+
+      // Toggle grid OFF
+      await tester.tap(gridToggle);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('GRID (OFF)'), findsOneWidget);
+
+      // Toggle grid ON again
+      final gridToggleOff = find.byIcon(Icons.grid_off_rounded);
+      await tester.tap(gridToggleOff);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('GRID'), findsOneWidget);
+    });
+  });
 }

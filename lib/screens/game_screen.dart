@@ -1330,6 +1330,20 @@ class _GameScreenState extends State<GameScreen>
                     ),
                   ),
 
+                // Screen-fixed Coordinate Badges Overlay (Latitude & Longitude edge numbers)
+                if (_renderMap && _showMapGrid && !_isModalOpen)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: _ScreenCoordinateBadgesOverlay(
+                        transformationController: _transformationController,
+                        viewportWidth: viewportWidth,
+                        viewportHeight: viewportHeight,
+                        hasBottomCard: _selectedLocation != null,
+                        isLevelMode: !_isLearningMode && !_isCoordinateMode,
+                      ),
+                    ),
+                  ),
+
                 // 3. Top-left Back Button (hidden in calibration mode)
                 if (!_isCalibrationMode)
                   Positioned(
@@ -1450,8 +1464,10 @@ class _GameScreenState extends State<GameScreen>
                         child: _LocationInfoCard(
                           location: _selectedLocation!,
                           isCompact: isCompact,
-                          onClose: () =>
-                              setState(() => _selectedLocation = null),
+                          onClose: () {
+                            setState(() => _selectedLocation = null);
+                            _resetZoom(viewportWidth, viewportHeight);
+                          },
                           onResetZoom: () =>
                               _resetZoom(viewportWidth, viewportHeight),
                         ),
@@ -2108,7 +2124,7 @@ class _CalibrationControlBar extends StatelessWidget {
 
 /// Information card displayed when a user taps a map location.
 /// Designed for Grade 4 learners: light high-contrast background, dark readable text,
-/// zoomable font size (A- / A+), and expandable height up to ~74% of the screen.
+/// half-screen height, and close button that zooms out back to the full map.
 class _LocationInfoCard extends StatefulWidget {
   const _LocationInfoCard({
     required this.location,
@@ -2128,8 +2144,6 @@ class _LocationInfoCard extends StatefulWidget {
 
 class _LocationInfoCardState extends State<_LocationInfoCard> {
   final ScrollController _scrollController = ScrollController();
-  double _fontScale = 1.0;
-  bool _isExpanded = false;
 
   @override
   void dispose() {
@@ -2137,52 +2151,23 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
     super.dispose();
   }
 
-  void _zoomInFont() {
-    AudioManager.instance.playClick();
-    if (_fontScale < 1.45) {
-      setState(() {
-        _fontScale = (_fontScale + 0.15).clamp(0.85, 1.45);
-      });
-    }
-  }
-
-  void _zoomOutFont() {
-    AudioManager.instance.playClick();
-    if (_fontScale > 0.85) {
-      setState(() {
-        _fontScale = (_fontScale - 0.15).clamp(0.85, 1.45);
-      });
-    }
-  }
-
-  void _toggleExpanded() {
-    AudioManager.instance.playClick();
-    setState(() {
-      _isExpanded = !_isExpanded;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final location = widget.location;
     final isCompact = widget.isCompact;
     final onClose = widget.onClose;
-    final onResetZoom = widget.onResetZoom;
 
     final screen = MediaQuery.sizeOf(context);
     final maxWidth = screen.width > 680 ? 560.0 : screen.width * 0.94;
-    // Mobile modal takes about half the phone height (0.52) or expands to 0.74 on demand
-    final maxHeight =
-        screen.height * (_isExpanded ? 0.74 : (isCompact ? 0.52 : 0.46));
+    // Mobile modal takes about half the phone height (0.52) comfortably
+    final maxHeight = screen.height * (isCompact ? 0.52 : 0.46);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: maxWidth,
         maxHeight: maxHeight,
       ),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOutCubic,
+      child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(22),
@@ -2210,103 +2195,54 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Action Row: Category Pill & Zoom/Expand/Close Controls
+              // Top Action Row: Category Pill & Close / Zoom-out Button
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Category Pill
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isCompact ? 8 : 10,
-                          vertical: isCompact ? 3 : 4,
+                  Flexible(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isCompact ? 8 : 10,
+                        vertical: isCompact ? 3 : 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: location.color.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: location.color,
+                          width: 1.2,
                         ),
-                        decoration: BoxDecoration(
-                          color: location.color.withValues(alpha: 0.18),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: location.color,
-                            width: 1.2,
-                          ),
+                      ),
+                      child: Text(
+                        location.category.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: isCompact ? 10.5 : 11.5,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF0F172A),
+                          letterSpacing: 0.5,
                         ),
-                        child: Text(
-                          location.category.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: (isCompact ? 10.5 : 11.5) * _fontScale,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFF0F172A),
-                            letterSpacing: 0.5,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
 
-                  // Font Size A- Button
-                  _SmallIconToolButton(
-                    tooltip: 'Paliitin ang Font',
-                    onTap: _zoomOutFont,
-                    child: Text(
-                      'A-',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: _fontScale > 0.86
-                            ? const Color(0xFF0F172A)
-                            : Colors.grey,
-                      ),
+                  // Close Button (Tapping this closes card and zooms out to full map)
+                  IconButton(
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: Color(0xFF475569),
+                      size: 22,
                     ),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Font Size A+ Button
-                  _SmallIconToolButton(
-                    tooltip: 'Palakihin ang Font',
-                    onTap: _zoomInFont,
-                    child: Text(
-                      'A+',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: _fontScale < 1.44
-                            ? const Color(0xFF0F172A)
-                            : Colors.grey,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Expand/Shrink Height Button
-                  _SmallIconToolButton(
-                    tooltip:
-                        _isExpanded ? 'Paliitin ang Card' : 'Palakihin ang Card',
-                    onTap: _toggleExpanded,
-                    child: Icon(
-                      _isExpanded
-                          ? Icons.fullscreen_exit_rounded
-                          : Icons.fullscreen_rounded,
-                      color: const Color(0xFF0F172A),
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-
-                  // Close Button
-                  _SmallIconToolButton(
-                    tooltip: 'Isara',
-                    onTap: () {
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Isara at Mag-zoom out',
+                    onPressed: () {
                       AudioManager.instance.playClick();
                       onClose();
                     },
-                    child: const Icon(
-                      Icons.close_rounded,
-                      color: Color(0xFF475569),
-                      size: 20,
-                    ),
                   ),
                 ],
               ),
@@ -2317,7 +2253,7 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
                 location.title,
                 style: TextStyle(
                   fontFamily: 'Jomhuria',
-                  fontSize: (isCompact ? 40 : 48) * _fontScale,
+                  fontSize: isCompact ? 40 : 48,
                   color: const Color(0xFF0F172A),
                   height: 0.88,
                   letterSpacing: 1.2,
@@ -2360,7 +2296,7 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
                           Text(
                             location.description,
                             style: TextStyle(
-                              fontSize: (isCompact ? 16.0 : 17.5) * _fontScale,
+                              fontSize: isCompact ? 16.0 : 17.5,
                               color: const Color(0xFF1E293B),
                               height: 1.45,
                               fontWeight: FontWeight.w600,
@@ -2395,7 +2331,7 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
                                         'ALAM MO BA? (FUN FACT)',
                                         style: TextStyle(
                                           fontSize:
-                                              (isCompact ? 11.5 : 12.5) * _fontScale,
+                                              isCompact ? 11.5 : 12.5,
                                           fontWeight: FontWeight.w800,
                                           color: const Color(0xFFB45309),
                                           letterSpacing: 0.5,
@@ -2411,7 +2347,7 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
                                   location.funFact,
                                   style: TextStyle(
                                     fontSize:
-                                        (isCompact ? 14.5 : 15.5) * _fontScale,
+                                        isCompact ? 14.5 : 15.5,
                                     color: const Color(0xFF1E293B),
                                     height: 1.42,
                                     fontWeight: FontWeight.w500,
@@ -2446,16 +2382,16 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
                   ),
                   onPressed: () {
                     AudioManager.instance.playClick();
-                    onResetZoom();
+                    onClose();
                   },
                   icon: Icon(
                     Icons.zoom_out_map_rounded,
-                    size: (isCompact ? 15 : 17) * _fontScale,
+                    size: isCompact ? 15 : 17,
                   ),
                   label: Text(
                     'BUMALIK SA BUONG MAPA',
                     style: TextStyle(
-                      fontSize: (isCompact ? 11.5 : 12.5) * _fontScale,
+                      fontSize: isCompact ? 11.5 : 12.5,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.5,
                     ),
@@ -2464,44 +2400,6 @@ class _LocationInfoCardState extends State<_LocationInfoCard> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Helper button for small tool icons (A-, A+, Fullscreen, Close).
-class _SmallIconToolButton extends StatelessWidget {
-  const _SmallIconToolButton({
-    required this.tooltip,
-    required this.onTap,
-    required this.child,
-  });
-
-  final String tooltip;
-  final VoidCallback onTap;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          width: 32,
-          height: 32,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1F5F9),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: const Color(0xFFCBD5E1),
-              width: 1,
-            ),
-          ),
-          child: child,
         ),
       ),
     );
@@ -2980,7 +2878,7 @@ class _CoordinateGridPainter extends CustomPainter {
   const _CoordinateGridPainter();
 
   // Parallels (Latitud - horizontal lines)
-  static const List<_GridLineData> _latitudes = [
+  static const List<_GridLineData> latitudes = [
     _GridLineData(label: '30° H', pos: 338.0),
     _GridLineData(label: '20° H', pos: 530.0),
     _GridLineData(label: '10° H', pos: 783.0),
@@ -2990,7 +2888,7 @@ class _CoordinateGridPainter extends CustomPainter {
   ];
 
   // Meridians (Longhitud - vertical lines)
-  static const List<_GridLineData> _longitudes = [
+  static const List<_GridLineData> longitudes = [
     _GridLineData(label: '95° S', pos: 82.0),
     _GridLineData(label: '100° S', pos: 195.0),
     _GridLineData(label: '110° S', pos: 389.0),
@@ -3012,7 +2910,7 @@ class _CoordinateGridPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     // Draw Parallels (Horizontal Latitude Lines)
-    for (final lat in _latitudes) {
+    for (final lat in latitudes) {
       final y = lat.pos;
       if (y < 0 || y > size.height) continue;
 
@@ -3042,19 +2940,10 @@ class _CoordinateGridPainter extends CustomPainter {
           gap: 6.0,
         );
       }
-
-      // Edge badges (left and right)
-      _drawBadge(canvas, lat.label, Offset(32.0, y), isEquator: lat.isEquator);
-      _drawBadge(
-        canvas,
-        lat.label,
-        Offset(size.width - 32.0, y),
-        isEquator: lat.isEquator,
-      );
     }
 
     // Draw Meridians (Vertical Longitude Lines)
-    for (final lon in _longitudes) {
+    for (final lon in longitudes) {
       final x = lon.pos;
       if (x < 0 || x > size.width) continue;
 
@@ -3066,10 +2955,6 @@ class _CoordinateGridPainter extends CustomPainter {
         dash: 8.0,
         gap: 6.0,
       );
-
-      // Edge badges (top and bottom)
-      _drawBadge(canvas, lon.label, Offset(x, 26.0));
-      _drawBadge(canvas, lon.label, Offset(x, size.height - 26.0));
     }
   }
 
@@ -3159,6 +3044,197 @@ class _GridLineData {
   final String label;
   final double pos;
   final bool isEquator;
+}
+
+/// Screen-fixed coordinate badges overlay.
+/// Keeps latitude labels pinned to the left and right screen borders
+/// and longitude labels pinned to the top and bottom screen borders,
+/// tracking the grid lines dynamically across all zoom levels and pan positions.
+class _ScreenCoordinateBadgesOverlay extends StatelessWidget {
+  const _ScreenCoordinateBadgesOverlay({
+    required this.transformationController,
+    required this.viewportWidth,
+    required this.viewportHeight,
+    required this.hasBottomCard,
+    this.isLevelMode = false,
+  });
+
+  final TransformationController transformationController;
+  final double viewportWidth;
+  final double viewportHeight;
+  final bool hasBottomCard;
+  final bool isLevelMode;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: transformationController,
+      builder: (context, _) {
+        return CustomPaint(
+          size: Size(viewportWidth, viewportHeight),
+          painter: _ScreenBadgesPainter(
+            matrix: transformationController.value,
+            viewportWidth: viewportWidth,
+            viewportHeight: viewportHeight,
+            hasBottomCard: hasBottomCard,
+            isLevelMode: isLevelMode,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ScreenBadgesPainter extends CustomPainter {
+  const _ScreenBadgesPainter({
+    required this.matrix,
+    required this.viewportWidth,
+    required this.viewportHeight,
+    required this.hasBottomCard,
+    required this.isLevelMode,
+  });
+
+  final Matrix4 matrix;
+  final double viewportWidth;
+  final double viewportHeight;
+  final bool hasBottomCard;
+  final bool isLevelMode;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final storage = matrix.storage;
+    final scaleX = storage[0];
+    final scaleY = storage[5];
+    final transX = storage[12];
+    final transY = storage[13];
+
+    const canvasWidth = 1024.0;
+    const canvasHeight = 1536.0;
+
+    final mapLeft = transX;
+    final mapRight = canvasWidth * scaleX + transX;
+    final mapTop = transY;
+    final mapBottom = canvasHeight * scaleY + transY;
+
+    // 1. Latitude numbers (Horizontal Parallels - on Left and Right sides of screen)
+    final topLimit = 60.0;
+    final bottomLimit = hasBottomCard
+        ? viewportHeight * 0.44
+        : (isLevelMode ? viewportHeight - 120.0 : viewportHeight - 24.0);
+
+    for (final lat in _CoordinateGridPainter.latitudes) {
+      final sy = lat.pos * scaleY + transY;
+      if (sy < topLimit || sy > bottomLimit) continue;
+      // If line is completely outside screen horizontally
+      if (mapRight < 24.0 || mapLeft > viewportWidth - 24.0) continue;
+
+      // Left screen side badge
+      final leftX = (mapLeft > 0)
+          ? math.min(mapLeft + 26.0, viewportWidth - 26.0)
+          : 26.0;
+      _drawBadge(canvas, lat.label, Offset(leftX, sy), isEquator: lat.isEquator);
+
+      // Right screen side badge
+      final rightX = (mapRight < viewportWidth)
+          ? math.max(26.0, mapRight - 26.0)
+          : viewportWidth - 26.0;
+      if (rightX > leftX + 54.0) {
+        _drawBadge(canvas, lat.label, Offset(rightX, sy), isEquator: lat.isEquator);
+      }
+    }
+
+    // 2. Longitude numbers (Vertical Meridians - on Top and Bottom sides of screen)
+    final leftLimit = 52.0;
+    final rightLimit = viewportWidth - 52.0;
+
+    for (final lon in _CoordinateGridPainter.longitudes) {
+      final sx = lon.pos * scaleX + transX;
+      if (sx < leftLimit || sx > rightLimit) continue;
+      // If line is completely outside screen vertically
+      if (mapBottom < 50.0 || mapTop > viewportHeight - 50.0) continue;
+
+      // Top screen side badge (docked just below top bar)
+      final topY = (mapTop > 62.0)
+          ? math.min(mapTop + 20.0, viewportHeight - 20.0)
+          : 62.0;
+      _drawBadge(canvas, lon.label, Offset(sx, topY));
+
+      // Bottom screen side badge (only when no bottom card)
+      if (!hasBottomCard) {
+        final bottomTarget =
+            isLevelMode ? viewportHeight - 120.0 : viewportHeight - 16.0;
+        final bottomY = (mapBottom < bottomTarget)
+            ? math.max(topY + 36.0, mapBottom - 16.0)
+            : bottomTarget;
+        if (bottomY > topY + 36.0) {
+          _drawBadge(canvas, lon.label, Offset(sx, bottomY));
+        }
+      }
+    }
+  }
+
+  void _drawBadge(
+    Canvas canvas,
+    String text,
+    Offset center, {
+    bool isEquator = false,
+  }) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: isEquator ? 12.0 : 10.5,
+          fontWeight: FontWeight.bold,
+          color: isEquator ? const Color(0xFFFFD54F) : const Color(0xFFE0F7FA),
+          letterSpacing: 0.5,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    final paddingH = isEquator ? 8.0 : 6.0;
+    final paddingV = isEquator ? 4.0 : 3.0;
+    final w = textPainter.width + paddingH * 2;
+    final h = textPainter.height + paddingV * 2;
+    final rect = Rect.fromCenter(center: center, width: w, height: h);
+    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(6));
+
+    // Shadow for clear contrast against any terrain
+    final shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
+    canvas.drawRRect(rrect.shift(const Offset(0, 1.5)), shadowPaint);
+
+    final bgPaint = Paint()
+      ..color = const Color(0xF0071B2B)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(rrect, bgPaint);
+
+    final borderPaint = Paint()
+      ..color = isEquator
+          ? const Color(0xFFFFD54F).withValues(alpha: 0.90)
+          : const Color(0xFF00E5FF).withValues(alpha: 0.70)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    canvas.drawRRect(rrect, borderPaint);
+
+    textPainter.paint(
+      canvas,
+      Offset(
+        center.dx - textPainter.width / 2,
+        center.dy - textPainter.height / 2,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ScreenBadgesPainter oldDelegate) {
+    return oldDelegate.matrix != matrix ||
+        oldDelegate.viewportWidth != viewportWidth ||
+        oldDelegate.viewportHeight != viewportHeight ||
+        oldDelegate.hasBottomCard != hasBottomCard ||
+        oldDelegate.isLevelMode != isLevelMode;
+  }
 }
 
 /// Floating glass button to toggle the coordinate grid layer on or off.
