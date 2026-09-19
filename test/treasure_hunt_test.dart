@@ -43,9 +43,43 @@ void main() {
       expect(q4.isAnswerCorrect('indonesya'), isTrue);
       expect(q4.isAnswerCorrect('Malaysia'), isFalse);
     });
+
+    test('Correct answers in TreasureHuntRegistry are not all at option A (index 0)', () {
+      final indices = TreasureHuntRegistry.questions.map((q) => q.options.indexOf(q.correctAnswer)).toList();
+      // Verify not all answers are at index 0
+      expect(indices.any((idx) => idx != 0), isTrue);
+      // Verify presence of index 1 and 2
+      expect(indices.contains(1), isTrue);
+      expect(indices.contains(2), isTrue);
+    });
+
+    test('withShuffledOptions randomizes options while preserving correct answer', () {
+      final q = TreasureHuntRegistry.questions[0];
+      final shuffled = q.withShuffledOptions();
+      expect(shuffled.options, containsAll(q.options));
+      expect(shuffled.isAnswerCorrect(q.correctAnswer), isTrue);
+    });
   });
 
   group('Subukin ang Kaalaman Registry Tests', () {
+    test('Correct answers in SubukinKaalamanRegistry are distributed across A, B, and C', () {
+      final indices = SubukinKaalamanRegistry.questions.map((q) => q.correctIndex).toList();
+      expect(indices.contains(0), isTrue); // A
+      expect(indices.contains(1), isTrue); // B
+      expect(indices.contains(2), isTrue); // C
+      final countA = indices.where((idx) => idx == 0).length;
+      // Not dominated by option A
+      expect(countA, lessThan(indices.length ~/ 2));
+    });
+
+    test('ClassicQuestion withShuffledOptions preserves correct answer text', () {
+      for (final q in SubukinKaalamanRegistry.questions) {
+        final originalAnswer = q.correctAnswer;
+        final shuffled = q.withShuffledOptions();
+        expect(shuffled.correctAnswer, originalAnswer);
+        expect(shuffled.isCorrect(shuffled.correctIndex), isTrue);
+      }
+    });
     test('Registry contains exactly 14 official questions', () {
       expect(SubukinKaalamanRegistry.questions.length, 14);
       for (final q in SubukinKaalamanRegistry.questions) {

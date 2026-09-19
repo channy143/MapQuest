@@ -84,12 +84,18 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
   void _startNewQuiz() {
     setState(() {
       if (widget.questions != null) {
-        _questions = List.from(widget.questions!);
+        _questions = widget.questions!
+            .map((q) => q.withShuffledOptions())
+            .toList();
       } else if (widget.title.contains('SUBUKIN') ||
           widget.title.contains('Kaalaman')) {
-        _questions = List.from(SubukinKaalamanRegistry.questions);
+        _questions = SubukinKaalamanRegistry.questions
+            .map((q) => q.withShuffledOptions())
+            .toList();
       } else {
-        _questions = ClassicQuestionRegistry.getRandomQuestions(10);
+        _questions = ClassicQuestionRegistry.getRandomQuestions(10)
+            .map((q) => q.withShuffledOptions())
+            .toList();
       }
       _currentIndex = 0;
       _selectedOptionIndex = null;

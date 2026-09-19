@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 /// Model for a treasure hunt challenge with an image clue.
 class TreasureHuntQuestion {
   final int id;
@@ -20,6 +22,22 @@ class TreasureHuntQuestion {
     required this.explanation,
   });
 
+  /// Returns a copy of the question with shuffled options so choices are randomized.
+  TreasureHuntQuestion withShuffledOptions([math.Random? random]) {
+    final rand = random ?? math.Random();
+    final shuffled = List<String>.from(options)..shuffle(rand);
+    return TreasureHuntQuestion(
+      id: id,
+      prompt: prompt,
+      correctAnswer: correctAnswer,
+      acceptableAnswers: acceptableAnswers,
+      imageAsset: imageAsset,
+      options: shuffled,
+      isTypingQuestion: isTypingQuestion,
+      explanation: explanation,
+    );
+  }
+
   /// Check if an answer string matches the correct answer (case-insensitive & trimmed).
   bool isAnswerCorrect(String input) {
     final cleaned = input.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
@@ -38,7 +56,7 @@ class TreasureHuntRegistry {
       'Basahin nang mabuti ang bawat pahiwatig upang malaman kung saan nakatago ang kayamanan. Piliin o i-type ang tamang sagot. Bawat tamang sagot ay may puntos! Handa ka na? Hanapin ang kayamanan!';
 
   static const List<TreasureHuntQuestion> questions = [
-    // Question 1: School in country north of Philippines -> Taiwan
+    // Question 1: School in country north of Philippines -> Taiwan (Option B)
     TreasureHuntQuestion(
       id: 1,
       prompt:
@@ -46,13 +64,13 @@ class TreasureHuntRegistry {
       correctAnswer: 'Taiwan',
       acceptableAnswers: ['taiwan', 'republic of china', 'roc'],
       imageAsset: 'assets/images/treasure_hunt/q1_school.png',
-      options: ['Taiwan', 'Japan', 'South Korea'],
+      options: ['Japan', 'Taiwan', 'South Korea'],
       isTypingQuestion: false,
       explanation:
           'Ang Taiwan ang pinakamalapit na karatig-bansa sa hilaga ng Pilipinas patawid sa Bashi Channel.',
     ),
 
-    // Question 2: Ship sailing southwest -> Sulu Sea
+    // Question 2: Ship sailing southwest -> Sulu Sea (Option C)
     TreasureHuntQuestion(
       id: 2,
       prompt:
@@ -60,13 +78,13 @@ class TreasureHuntRegistry {
       correctAnswer: 'Sulu Sea',
       acceptableAnswers: ['sulu sea', 'dagat sulu', 'sulu'],
       imageAsset: 'assets/images/treasure_hunt/q2_ship_sulu.png',
-      options: ['Sulu Sea', 'Celebes Sea', 'Philippine Sea'],
+      options: ['Celebes Sea', 'Philippine Sea', 'Sulu Sea'],
       isTypingQuestion: true,
       explanation:
           'Ang Sulu Sea ay matatagpuan sa timog-kanluran ng Pilipinas, napalilibutan ng Palawan, Visayas, at Sulu Archipelago.',
     ),
 
-    // Question 3: City building in country northeast/northwest -> China
+    // Question 3: City building in country northeast/northwest -> China (Option A)
     TreasureHuntQuestion(
       id: 3,
       prompt:
@@ -80,7 +98,7 @@ class TreasureHuntRegistry {
           'Ang China ay malaking bansa sa kontinente ng Asya sa hilaga ng Pilipinas.',
     ),
 
-    // Question 4: Cave in country south -> Indonesia
+    // Question 4: Cave in country south -> Indonesia (Option B)
     TreasureHuntQuestion(
       id: 4,
       prompt:
@@ -88,13 +106,13 @@ class TreasureHuntRegistry {
       correctAnswer: 'Indonesia',
       acceptableAnswers: ['indonesia', 'indonesya'],
       imageAsset: 'assets/images/treasure_hunt/q4_cave_indonesia.png',
-      options: ['Indonesia', 'Malaysia', 'East Timor'],
+      options: ['Malaysia', 'Indonesia', 'East Timor'],
       isTypingQuestion: true,
       explanation:
           'Ang Indonesia ay ang pinakamalaking kapuluang bansa na nasa direktang timog ng Pilipinas.',
     ),
 
-    // Question 5: Playground in country west -> Vietnam
+    // Question 5: Playground in country west -> Vietnam (Option C)
     TreasureHuntQuestion(
       id: 5,
       prompt:
@@ -102,13 +120,13 @@ class TreasureHuntRegistry {
       correctAnswer: 'Vietnam',
       acceptableAnswers: ['vietnam', 'biyetnam'],
       imageAsset: 'assets/images/treasure_hunt/q5_playground_vietnam.png',
-      options: ['Vietnam', 'Laos', 'Cambodia'],
+      options: ['Laos', 'Cambodia', 'Vietnam'],
       isTypingQuestion: false,
       explanation:
           'Ang Vietnam ay may baybaying hugis titik "S" sa kanluran ng Pilipinas patawid sa West Philippine Sea.',
     ),
 
-    // Question 6: Island southeast -> Palau
+    // Question 6: Island southeast -> Palau (Option A)
     TreasureHuntQuestion(
       id: 6,
       prompt:
@@ -122,7 +140,7 @@ class TreasureHuntRegistry {
           'Ang bansang Palau ay matatagpuan sa Karagatang Pasipiko sa timog-silangan ng Mindanao.',
     ),
 
-    // Question 7: Country west of Philippines -> Thailand
+    // Question 7: Country west of Philippines -> Thailand (Option B)
     TreasureHuntQuestion(
       id: 7,
       prompt:
@@ -130,13 +148,13 @@ class TreasureHuntRegistry {
       correctAnswer: 'Thailand',
       acceptableAnswers: ['thailand', 'taylandiya', 'siam'],
       imageAsset: 'assets/images/treasure_hunt/q7_forest_thailand.png',
-      options: ['Thailand', 'Myanmar', 'Singapore'],
+      options: ['Myanmar', 'Thailand', 'Singapore'],
       isTypingQuestion: false,
       explanation:
           'Ang Thailand ay matatagpuan sa kanluran ng Pilipinas sa Indochina Peninsula sa Timog-Silangang Asya.',
     ),
 
-    // Question 8: Big ocean east of Philippines -> Pacific Ocean
+    // Question 8: Big ocean east of Philippines -> Pacific Ocean (Option C)
     TreasureHuntQuestion(
       id: 8,
       prompt:
@@ -149,13 +167,13 @@ class TreasureHuntRegistry {
         'pasipiko'
       ],
       imageAsset: 'assets/images/treasure_hunt/q8_ocean_pacific.png',
-      options: ['Pacific Ocean', 'Indian Ocean', 'Atlantic Ocean'],
+      options: ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean'],
       isTypingQuestion: true,
       explanation:
           'Ang Pacific Ocean ang pinakamalaking karagatan sa buong daigdig na sumasakop sa silangang bahagi ng Pilipinas.',
     ),
 
-    // Question 9: Ship sailing in west sea -> West Philippine Sea
+    // Question 9: Ship sailing in west sea -> West Philippine Sea (Option A)
     TreasureHuntQuestion(
       id: 9,
       prompt:
@@ -173,7 +191,7 @@ class TreasureHuntRegistry {
           'Ang West Philippine Sea ang katubigan sa kanlurang baybayin ng Pilipinas na sakop ng Exclusive Economic Zone (EEZ).',
     ),
 
-    // Question 10: Ocean ship northeast -> Philippine Sea
+    // Question 10: Ocean ship northeast -> Philippine Sea (Option B)
     TreasureHuntQuestion(
       id: 10,
       prompt:
@@ -181,7 +199,7 @@ class TreasureHuntRegistry {
       correctAnswer: 'Philippine Sea',
       acceptableAnswers: ['philippine sea', 'dagat pilipinas'],
       imageAsset: 'assets/images/treasure_hunt/q10_helm_phsea.png',
-      options: ['Philippine Sea', 'Sulu Sea', 'Celebes Sea'],
+      options: ['Sulu Sea', 'Philippine Sea', 'Celebes Sea'],
       isTypingQuestion: true,
       explanation:
           'Ang Philippine Sea ay bahagi ng Karagatang Pasipiko na nasa silangan at hilagang-silangan ng Pilipinas.',

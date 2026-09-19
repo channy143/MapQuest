@@ -27,7 +27,7 @@ class TreasureHuntScreen extends StatefulWidget {
 
 class _TreasureHuntScreenState extends State<TreasureHuntScreen>
     with SingleTickerProviderStateMixin {
-  late final List<TreasureHuntQuestion> _questions;
+  late List<TreasureHuntQuestion> _questions;
   int _currentIndex = 0;
   int? _selectedOptionIndex;
   String? _submittedText;
@@ -62,7 +62,9 @@ class _TreasureHuntScreenState extends State<TreasureHuntScreen>
   @override
   void initState() {
     super.initState();
-    _questions = TreasureHuntRegistry.questions;
+    _questions = TreasureHuntRegistry.questions
+        .map((q) => q.withShuffledOptions())
+        .toList();
     _cardAnimController.forward();
   }
 
@@ -178,6 +180,9 @@ class _TreasureHuntScreenState extends State<TreasureHuntScreen>
 
   void _restartGame() {
     setState(() {
+      _questions = TreasureHuntRegistry.questions
+          .map((q) => q.withShuffledOptions())
+          .toList();
       _currentIndex = 0;
       _selectedOptionIndex = null;
       _submittedText = null;
