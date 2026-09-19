@@ -31,6 +31,20 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
   int _correctCount = 0;
   int _score = 0;
   bool _isQuizCompleted = false;
+  double _fontScale = 1.0; // Cycles: 1.0x -> 1.25x -> 1.5x
+
+  void _cycleFontScale() {
+    AudioManager.instance.playClick();
+    setState(() {
+      if (_fontScale == 1.0) {
+        _fontScale = 1.25;
+      } else if (_fontScale == 1.25) {
+        _fontScale = 1.5;
+      } else {
+        _fontScale = 1.0;
+      }
+    });
+  }
 
   late final AnimationController _cardAnimController = AnimationController(
     vsync: this,
@@ -184,8 +198,8 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(
-                        horizontal: isCompact ? 16 : 28,
-                        vertical: isCompact ? 10 : 20,
+                        horizontal: isCompact ? 16 : 24,
+                        vertical: isCompact ? 3 : 5,
                       ),
                       child: _isQuizCompleted
                           ? _buildCompletionCard(isCompact)
@@ -207,7 +221,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: isCompact ? 14 : 24,
-        vertical: isCompact ? 10 : 14,
+        vertical: isCompact ? 5 : 7,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -224,7 +238,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                     _handleBack();
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
@@ -236,12 +250,12 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                     child: const Icon(
                       Icons.arrow_back_rounded,
                       color: Colors.white,
-                      size: 24,
+                      size: 20,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               // Title / Mode Tag
               Expanded(
@@ -252,7 +266,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                       'KLASIKONG PAGSUSULIT',
                       style: TextStyle(
                         fontFamily: 'Jomhuria',
-                        fontSize: isCompact ? 26 : 32,
+                        fontSize: isCompact ? 24 : 28,
                         color: Colors.amber,
                         height: 0.85,
                         letterSpacing: 1.5,
@@ -261,7 +275,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                     Text(
                       '10 Tanong • 3 Pagpipilian',
                       style: TextStyle(
-                        fontSize: isCompact ? 11 : 12.5,
+                        fontSize: isCompact ? 10.5 : 11.5,
                         color: Colors.white.withValues(alpha: 0.75),
                         fontWeight: FontWeight.w500,
                       ),
@@ -273,8 +287,8 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
               // Score Badge
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: isCompact ? 10 : 14,
-                  vertical: 6,
+                  horizontal: isCompact ? 8 : 12,
+                  vertical: 4,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.amber.withValues(alpha: 0.20),
@@ -293,12 +307,12 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('⭐', style: TextStyle(fontSize: 14)),
-                    const SizedBox(width: 5),
+                    const Text('⭐', style: TextStyle(fontSize: 13)),
+                    const SizedBox(width: 4),
                     Text(
                       '$_score',
                       style: TextStyle(
-                        fontSize: isCompact ? 13 : 15,
+                        fontSize: isCompact ? 12 : 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.amberAccent,
                       ),
@@ -308,14 +322,14 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
 
           // Linear Progress Bar
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 6,
+              minHeight: 5,
               backgroundColor: Colors.white.withValues(alpha: 0.15),
               valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00E5FF)),
             ),
@@ -341,7 +355,10 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
               child: Container(
-                padding: EdgeInsets.all(isCompact ? 18 : 26),
+                padding: EdgeInsets.symmetric(
+                  horizontal: isCompact ? 14 : 18,
+                  vertical: isCompact ? 10 : 12,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF081544).withValues(alpha: 0.90),
                   borderRadius: BorderRadius.circular(24),
@@ -387,30 +404,98 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                             ),
                           ),
                         ),
-                        Text(
-                          '$_correctCount Tama',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white.withValues(alpha: 0.70),
-                          ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: _cycleFontScale,
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.30),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.format_size_rounded,
+                                        size: 15,
+                                        color: Colors.amber,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${(_fontScale * 100).toInt()}%',
+                                        style: const TextStyle(
+                                          fontSize: 11.5,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '$_correctCount Tama',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white.withValues(alpha: 0.70),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
 
-                    // Question Prompt
-                    Text(
-                      question.prompt,
-                      style: TextStyle(
-                        fontSize: isCompact ? 15.5 : 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.38,
-                        letterSpacing: 0.2,
+                    // Question Prompt in Clean Light Container
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isCompact ? 12 : 16,
+                        vertical: isCompact ? 9 : 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: const Color(0xFFCBD5E1),
+                          width: 1.4,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        question.prompt,
+                        style: TextStyle(
+                          fontSize: (isCompact ? 16.5 : 18.5) * _fontScale,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          height: 1.34,
+                          letterSpacing: 0.2,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 10),
 
                     // 3 Choices
                     for (int i = 0; i < question.options.length; i++)
@@ -423,20 +508,30 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
 
                     // Explanation Box (shown after answer)
                     if (_hasAnswered) ...[
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 8),
                       Container(
-                        padding: EdgeInsets.all(isCompact ? 12 : 14),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isCompact ? 12 : 14,
+                          vertical: isCompact ? 8 : 10,
+                        ),
                         decoration: BoxDecoration(
                           color: _selectedOptionIndex == question.correctIndex
-                              ? const Color(0xFF00E676).withValues(alpha: 0.15)
-                              : const Color(0xFFFF9100).withValues(alpha: 0.15),
+                              ? const Color(0xFFF0FDF4)
+                              : const Color(0xFFFFFBEB),
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: _selectedOptionIndex == question.correctIndex
-                                ? const Color(0xFF00E676).withValues(alpha: 0.55)
-                                : const Color(0xFFFF9100).withValues(alpha: 0.55),
-                            width: 1.2,
+                                ? const Color(0xFF86EFAC)
+                                : const Color(0xFFFDE68A),
+                            width: 1.4,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,8 +540,9 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                               _selectedOptionIndex == question.correctIndex
                                   ? '🎉 '
                                   : '💡 ',
-                              style: const TextStyle(fontSize: 16),
+                              style: const TextStyle(fontSize: 18),
                             ),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,12 +552,12 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                                         ? 'TAMA ANG IYONG SAGOT!'
                                         : 'ALAMIN ANG PALIWANAG:',
                                     style: TextStyle(
-                                      fontSize: isCompact ? 11.5 : 12.5,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: (isCompact ? 12.0 : 13.0) * _fontScale,
+                                      fontWeight: FontWeight.w800,
                                       color: _selectedOptionIndex ==
                                               question.correctIndex
-                                          ? const Color(0xFF00E676)
-                                          : const Color(0xFFFFB74D),
+                                          ? const Color(0xFF15803D)
+                                          : const Color(0xFFB45309),
                                       letterSpacing: 0.4,
                                     ),
                                   ),
@@ -469,9 +565,10 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                                   Text(
                                     question.explanation,
                                     style: TextStyle(
-                                      fontSize: isCompact ? 12 : 13.5,
-                                      color: Colors.white.withValues(alpha: 0.95),
-                                      height: 1.35,
+                                      fontSize: (isCompact ? 14.5 : 16.5) * _fontScale,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                      height: 1.34,
                                     ),
                                   ),
                                 ],
@@ -480,11 +577,11 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                           ],
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 10),
 
                       // Next / Complete Button
                       SizedBox(
-                        height: isCompact ? 44 : 50,
+                        height: isCompact ? 38 : 42,
                         child: ElevatedButton(
                           onPressed: () {
                             AudioManager.instance.playClick();
@@ -528,29 +625,33 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
     required bool isCompact,
     required ClassicQuestion question,
   }) {
-    Color borderColor = Colors.white.withValues(alpha: 0.25);
-    Color bgColor = Colors.white.withValues(alpha: 0.06);
-    Color textColor = Colors.white;
+    Color borderColor = const Color(0xFFCBD5E1);
+    Color bgColor = const Color(0xFFFFFFFF);
+    Color textColor = Colors.black;
     Widget? trailingIcon;
 
     if (_hasAnswered) {
       if (index == question.correctIndex) {
-        borderColor = const Color(0xFF00E676);
-        bgColor = const Color(0xFF00E676).withValues(alpha: 0.22);
+        borderColor = const Color(0xFF16A34A);
+        bgColor = const Color(0xFFDCFCE7);
         trailingIcon = const Icon(Icons.check_circle_rounded,
-            color: Color(0xFF00E676), size: 20);
+            color: Color(0xFF16A34A), size: 22);
       } else if (_selectedOptionIndex == index) {
-        borderColor = const Color(0xFFFF5252);
-        bgColor = const Color(0xFFFF5252).withValues(alpha: 0.22);
+        borderColor = const Color(0xFFDC2626);
+        bgColor = const Color(0xFFFEE2E2);
         trailingIcon = const Icon(Icons.cancel_rounded,
-            color: Color(0xFFFF5252), size: 20);
+            color: Color(0xFFDC2626), size: 22);
+      } else {
+        bgColor = const Color(0xFFF1F5F9);
+        borderColor = const Color(0xFFE2E8F0);
+        textColor = const Color(0xFF64748B);
       }
     }
 
     final letter = String.fromCharCode(65 + index); // A, B, C
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 7),
       child: Material(
         color: bgColor,
         borderRadius: BorderRadius.circular(14),
@@ -566,38 +667,49 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.symmetric(
               horizontal: isCompact ? 12 : 16,
-              vertical: isCompact ? 11 : 13,
+              vertical: isCompact ? 10 : 12,
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: borderColor, width: 1.4),
+              border: Border.all(color: borderColor, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: 30,
+                  height: 30,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.12),
+                    color: _hasAnswered && index == question.correctIndex
+                        ? const Color(0xFF16A34A)
+                        : (_hasAnswered && _selectedOptionIndex == index
+                            ? const Color(0xFFDC2626)
+                            : const Color(0xFF0F172A)),
                     shape: BoxShape.circle,
                   ),
                   child: Text(
                     letter,
-                    style: TextStyle(
-                      fontSize: 13,
+                    style: const TextStyle(
+                      fontSize: 13.5,
                       fontWeight: FontWeight.bold,
-                      color: textColor,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     optionText,
                     style: TextStyle(
-                      fontSize: isCompact ? 13.5 : 15,
-                      fontWeight: FontWeight.w500,
+                      fontSize: (isCompact ? 15.5 : 17.5) * _fontScale,
+                      fontWeight: FontWeight.w700,
                       color: textColor,
                       height: 1.3,
                     ),
@@ -714,14 +826,31 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                 ),
                 const SizedBox(height: 18),
 
-                // Feedback
-                Text(
-                  feedbackMessage,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isCompact ? 13 : 14.5,
-                    color: Colors.white.withValues(alpha: 0.90),
-                    height: 1.35,
+                // Feedback in Light Container with pure black text
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    feedbackMessage,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isCompact ? 14.5 : 16.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      height: 1.38,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),

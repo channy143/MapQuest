@@ -3568,89 +3568,103 @@ class _GlassWelcomeModal extends StatelessWidget {
                 ),
               ],
             ),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Top Title in Jomhuria Typography
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top Title in Jomhuria Typography
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Jomhuria',
+                    fontSize: isCompact ? 36 : 48,
+                    color: titleColor,
+                    height: 0.85,
+                    letterSpacing: 2,
+                  ),
+                ),
+                SizedBox(height: isCompact ? 2 : 4),
+
+                // Mode Indicator Tag
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: isCompact ? 8 : 12, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: tagColor.withValues(alpha: 0.20),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: tagColor.withValues(alpha: 0.60),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    tag,
                     style: TextStyle(
                       fontFamily: 'Jomhuria',
-                      fontSize: isCompact ? 40 : 64,
-                      color: titleColor,
-                      height: 0.85,
-                      letterSpacing: 2,
+                      fontSize: isCompact ? 18 : 22,
+                      color: tagColor,
+                      height: 0.9,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                  SizedBox(height: isCompact ? 3 : 6),
+                ),
+                SizedBox(height: isCompact ? 4 : 8),
 
-                  // Mode Indicator Tag
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: isCompact ? 8 : 14, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: tagColor.withValues(alpha: 0.20),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: tagColor.withValues(alpha: 0.60),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      tag,
-                      style: TextStyle(
-                        fontFamily: 'Jomhuria',
-                        fontSize: isCompact ? 18 : 26,
-                        color: tagColor,
-                        height: 0.9,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
+                // Decorative Divider Line
+                Container(
+                  width: isCompact ? 50 : 70,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: tagColor.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(1),
                   ),
-                  SizedBox(height: isCompact ? 6 : 14),
+                ),
+                SizedBox(height: isCompact ? 6 : 10),
 
-                  // Decorative Divider Line
-                  Container(
-                    width: isCompact ? 60 : 80,
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: tagColor.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(1),
-                    ),
-                  ),
-                  SizedBox(height: isCompact ? 8 : 16),
-
-                  // Welcome Message Content
-                  Text(
-                    welcomeText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isCompact ? 12.5 : 15.5,
-                      color: Colors.white.withValues(alpha: 0.95),
-                      height: isCompact ? 1.32 : 1.45,
-                      fontWeight: FontWeight.w400,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 0.35),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
+                // Welcome Message Content with Light High-Contrast Container & Pure Black Text
+                Flexible(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(isCompact ? 12 : 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: const Color(0xFFCBD5E1),
+                          width: 1.5,
                         ),
-                      ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        welcomeText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isCompact ? 14.0 : 16.0,
+                          color: Colors.black,
+                          height: 1.45,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(height: isCompact ? 12 : 24),
+                ),
+                SizedBox(height: isCompact ? 10 : 16),
 
-                  // Hoverable Continue Button
-                  _HoverContinueButton(
-                    label: buttonLabel,
-                    isCompact: isCompact,
-                    onTap: onContinue,
-                  ),
-                ],
-              ),
+                // Hoverable Continue Button
+                _HoverContinueButton(
+                  label: buttonLabel,
+                  isCompact: isCompact,
+                  onTap: onContinue,
+                ),
+              ],
             ),
           ),
         ),
@@ -3967,8 +3981,11 @@ class _GameHudHeader extends StatelessWidget {
 }
 
 /// Floating bottom panel presenting the active mission, instructions, progressive clues,
+/// Floating bottom panel presenting the active mission, instructions, progressive clues,
 /// and interactive choice options.
-class _GameMissionPanel extends StatelessWidget {
+/// Enhanced with expandable half-phone modal sizing, zoomable fonts,
+/// and light high-contrast background containers with pure black text.
+class _GameMissionPanel extends StatefulWidget {
   const _GameMissionPanel({
     super.key,
     required this.mission,
@@ -3987,15 +4004,63 @@ class _GameMissionPanel extends StatelessWidget {
   final ValueChanged<int> onSelectChoice;
 
   @override
-  Widget build(BuildContext context) {
-    final screen = MediaQuery.sizeOf(context);
-    final maxWidth = screen.width > 700 ? 630.0 : screen.width * 0.94;
-    final maxHeight = screen.height * (isCompact ? 0.48 : 0.44);
+  State<_GameMissionPanel> createState() => _GameMissionPanelState();
+}
 
-    return ConstrainedBox(
+class _GameMissionPanelState extends State<_GameMissionPanel> {
+  bool _isExpanded = false;
+  double _fontScale = 1.0; // Cycles: 1.0x -> 1.25x -> 1.5x
+
+  void _cycleFontScale() {
+    AudioManager.instance.playClick();
+    setState(() {
+      if (_fontScale == 1.0) {
+        _fontScale = 1.25;
+      } else if (_fontScale == 1.25) {
+        _fontScale = 1.5;
+      } else {
+        _fontScale = 1.0;
+      }
+    });
+  }
+
+  void _toggleExpanded() {
+    AudioManager.instance.playClick();
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mission = widget.mission;
+    final isCompact = widget.isCompact;
+    final screen = MediaQuery.sizeOf(context);
+    final maxWidth = screen.width > 700 ? 640.0 : screen.width * 0.95;
+
+    // Mobile modal takes about half the phone height (0.52) comfortably by default
+    // When expanded ("modako sya inig ka tap bitaw para managko ang fonts"), it expands to 0.82
+    final defaultHeight = screen.height * (isCompact ? 0.52 : 0.46);
+    final expandedHeight = screen.height * (isCompact ? 0.82 : 0.74);
+    final currentMaxHeight = _isExpanded ? expandedHeight : defaultHeight;
+
+    // Font scaling: incorporates user zoom level & additional expansion boost
+    final double expansionMultiplier = _isExpanded ? 1.15 : 1.0;
+    final double effectiveFontScale = _fontScale * expansionMultiplier;
+
+    final double promptFontSize =
+        (isCompact ? 19.0 : 21.0) * effectiveFontScale;
+    final double instructionFontSize =
+        (isCompact ? 15.0 : 16.5) * effectiveFontScale;
+    final double clueFontSize =
+        (isCompact ? 16.0 : 17.5) * effectiveFontScale;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
       constraints: BoxConstraints(
         maxWidth: maxWidth,
-        maxHeight: maxHeight,
+        maxHeight: currentMaxHeight,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),
@@ -4036,7 +4101,7 @@ class _GameMissionPanel extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Mission Title Row
+                  // Mission Title Row with Font Zoom and Card Expand/Collapse Controls
                   Row(
                     children: [
                       Container(
@@ -4055,96 +4120,173 @@ class _GameMissionPanel extends StatelessWidget {
                         child: Text(
                           'HAMON ${mission.missionNumber}',
                           style: TextStyle(
-                            fontSize: isCompact ? 11 : 12.5,
+                            fontSize: isCompact ? 11.5 : 13.0,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFF00E5FF),
                             letterSpacing: 0.8,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           mission.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: isCompact ? 15 : 17.5,
+                            fontSize: isCompact ? 15.5 : 18.5,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             letterSpacing: 0.4,
                           ),
                         ),
                       ),
+                      const SizedBox(width: 4),
+
+                      // Font Zoom Button (Cycles 100% -> 125% -> 150%)
+                      IconButton(
+                        icon: Icon(
+                          _fontScale == 1.5
+                              ? Icons.text_fields_rounded
+                              : Icons.format_size_rounded,
+                          color: _fontScale > 1.0 ? Colors.amberAccent : Colors.white,
+                          size: isCompact ? 22 : 24,
+                        ),
+                        tooltip: 'Palakihin ang Font (${(_fontScale * 100).toInt()}%)',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        onPressed: _cycleFontScale,
+                      ),
+
+                      // Expand / Collapse Card Button
+                      IconButton(
+                        icon: Icon(
+                          _isExpanded
+                              ? Icons.fullscreen_exit_rounded
+                              : Icons.fullscreen_rounded,
+                          color: _isExpanded ? const Color(0xFF00E5FF) : Colors.white,
+                          size: isCompact ? 24 : 26,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        tooltip: _isExpanded ? 'Paliitin ang Card' : 'Palakihin ang Card',
+                        onPressed: _toggleExpanded,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
 
-                  // Mission Prompt
-                  Text(
-                    mission.prompt,
-                    style: TextStyle(
-                      fontSize: isCompact ? 14.5 : 16.5,
-                      color: Colors.white.withValues(alpha: 0.98),
-                      height: 1.38,
-                      fontWeight: FontWeight.w500,
+                  // Mission Prompt with Light Background & Pure Black Text
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(isCompact ? 13 : 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: const Color(0xFFCBD5E1),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      mission.prompt,
+                      style: TextStyle(
+                        fontSize: promptFontSize,
+                        color: Colors.black,
+                        height: 1.46,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 7),
+                  const SizedBox(height: 8),
 
-                  // Mission Instruction
-                  Text(
-                    mission.instruction,
-                    style: TextStyle(
-                      fontSize: isCompact ? 12.5 : 14.0,
-                      color: const Color(0xFFFFD54F),
-                      fontWeight: FontWeight.w600,
-                      height: 1.3,
+                  // Mission Instruction with Light Warm Amber Container & Black Text
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isCompact ? 12 : 14,
+                      vertical: isCompact ? 8 : 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFBEB),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFF59E0B),
+                        width: 1.3,
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('📌 ', style: TextStyle(fontSize: 16)),
+                        Expanded(
+                          child: Text(
+                            mission.instruction,
+                            style: TextStyle(
+                              fontSize: instructionFontSize,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 11),
 
                   // Progressive Clues (for cluesMap missions)
                   if (mission.type == MissionType.cluesMap) ...[
-                    for (int i = 0; i < revealedCluesCount && i < mission.clues.length; i++)
+                    for (int i = 0;
+                        i < widget.revealedCluesCount && i < mission.clues.length;
+                        i++)
                       Container(
-                        margin: const EdgeInsets.only(bottom: 7),
+                        margin: const EdgeInsets.only(bottom: 8),
                         padding: EdgeInsets.symmetric(
-                          horizontal: isCompact ? 12 : 14,
-                          vertical: isCompact ? 8 : 10,
+                          horizontal: isCompact ? 13 : 15,
+                          vertical: isCompact ? 9 : 11,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFFFFFBEB),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: Colors.amber.withValues(alpha: 0.45),
-                            width: 1.2,
+                            color: const Color(0xFFF59E0B),
+                            width: 1.4,
                           ),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('🔎 ', style: TextStyle(fontSize: isCompact ? 14 : 16)),
+                            Text('🔎 ',
+                                style: TextStyle(fontSize: isCompact ? 16 : 18)),
                             Expanded(
                               child: Text(
                                 mission.clues[i],
                                 style: TextStyle(
-                                  fontSize: isCompact ? 13 : 14.5,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: clueFontSize,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.38,
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    if (revealedCluesCount < mission.clues.length)
+                    if (widget.revealedCluesCount < mission.clues.length)
                       Align(
                         alignment: Alignment.centerLeft,
                         child: TextButton.icon(
                           onPressed: () {
                             AudioManager.instance.playClick();
-                            onRevealNextClue();
+                            widget.onRevealNextClue();
                           },
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
@@ -4155,9 +4297,9 @@ class _GameMissionPanel extends StatelessWidget {
                           ),
                           icon: const Icon(Icons.add_circle_outline, size: 17),
                           label: Text(
-                            'Ipakita ang susunod na pahiwatig (${mission.clues.length - revealedCluesCount} natitira)',
+                            'Ipakita ang susunod na pahiwatig (${mission.clues.length - widget.revealedCluesCount} natitira)',
                             style: TextStyle(
-                              fontSize: isCompact ? 12 : 13.5,
+                              fontSize: isCompact ? 12.5 : 14.0,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -4170,11 +4312,12 @@ class _GameMissionPanel extends StatelessWidget {
                     const SizedBox(height: 6),
                     for (int idx = 0; idx < mission.choices.length; idx++)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 7),
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: _MissionChoiceButton(
                           label: mission.choices[idx],
                           isCompact: isCompact,
-                          onTap: () => onSelectChoice(idx),
+                          fontScale: effectiveFontScale,
+                          onTap: () => widget.onSelectChoice(idx),
                         ),
                       ),
                   ],
@@ -4189,43 +4332,46 @@ class _GameMissionPanel extends StatelessWidget {
                       children: [
                         for (final targetId in mission.targetLocationIds) ...[
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isCompact ? 12 : 16,
+                              vertical: isCompact ? 6 : 8,
                             ),
                             decoration: BoxDecoration(
-                              color: tappedTargets.contains(targetId.toLowerCase())
-                                  ? Colors.green.withValues(alpha: 0.32)
-                                  : Colors.white.withValues(alpha: 0.10),
-                              borderRadius: BorderRadius.circular(10),
+                              color: widget.tappedTargets
+                                      .contains(targetId.toLowerCase())
+                                  ? const Color(0xFFDCFCE7)
+                                  : const Color(0xFFF1F5F9),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: tappedTargets.contains(targetId.toLowerCase())
-                                    ? Colors.greenAccent
-                                    : Colors.white30,
-                                width: 1.2,
+                                color: widget.tappedTargets
+                                        .contains(targetId.toLowerCase())
+                                    ? const Color(0xFF16A34A)
+                                    : const Color(0xFF94A3B8),
+                                width: 1.5,
                               ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  tappedTargets.contains(targetId.toLowerCase())
+                                  widget.tappedTargets
+                                          .contains(targetId.toLowerCase())
                                       ? Icons.check_circle_rounded
                                       : Icons.radio_button_unchecked_rounded,
-                                  size: 15,
-                                  color: tappedTargets.contains(targetId.toLowerCase())
-                                      ? Colors.greenAccent
-                                      : Colors.white70,
+                                  size: isCompact ? 17 : 20,
+                                  color: widget.tappedTargets
+                                          .contains(targetId.toLowerCase())
+                                      ? const Color(0xFF16A34A)
+                                      : const Color(0xFF64748B),
                                 ),
-                                const SizedBox(width: 5),
+                                const SizedBox(width: 6),
                                 Text(
                                   '${targetId[0].toUpperCase()}${targetId.substring(1)}',
                                   style: TextStyle(
-                                    fontSize: isCompact ? 11.5 : 13,
+                                    fontSize: (isCompact ? 13.5 : 15.5) *
+                                        effectiveFontScale,
                                     fontWeight: FontWeight.bold,
-                                    color: tappedTargets.contains(targetId.toLowerCase())
-                                        ? Colors.greenAccent
-                                        : Colors.white,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ],
@@ -4267,7 +4413,7 @@ class _GameMissionPanel extends StatelessWidget {
                               'Pumili at pindutin ang tamang bilog o bansa sa mapa sa itaas',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: isCompact ? 12 : 13.5,
+                                fontSize: isCompact ? 12.5 : 14.0,
                                 color: const Color(0xFF00E5FF),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -4293,11 +4439,13 @@ class _MissionChoiceButton extends StatefulWidget {
     required this.label,
     required this.isCompact,
     required this.onTap,
+    this.fontScale = 1.0,
   });
 
   final String label;
   final bool isCompact;
   final VoidCallback onTap;
+  final double fontScale;
 
   @override
   State<_MissionChoiceButton> createState() => _MissionChoiceButtonState();
@@ -4321,45 +4469,54 @@ class _MissionChoiceButtonState extends State<_MissionChoiceButton> {
           duration: const Duration(milliseconds: 180),
           padding: EdgeInsets.symmetric(
             horizontal: widget.isCompact ? 14 : 18,
-            vertical: widget.isCompact ? 10 : 12,
+            vertical: widget.isCompact ? 11 : 14,
           ),
           decoration: BoxDecoration(
             color: _hovered
-                ? const Color(0xFF1976D2).withValues(alpha: 0.75)
-                : Colors.white.withValues(alpha: 0.10),
-            borderRadius: BorderRadius.circular(12),
+                ? const Color(0xFFE2E8F0)
+                : const Color(0xFFFFFFFF),
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: _hovered
-                  ? const Color(0xFF64B5F6)
-                  : Colors.white.withValues(alpha: 0.28),
-              width: 1.4,
+                  ? const Color(0xFF00E5FF)
+                  : const Color(0xFFCBD5E1),
+              width: 1.6,
             ),
-            boxShadow: _hovered
-                ? [
-                    BoxShadow(
-                      color: const Color(0xFF1976D2).withValues(alpha: 0.45),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    ),
-                  ]
-                : [],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Row(
             children: [
+              Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF0F172A),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 16,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   widget.label,
                   style: TextStyle(
-                    fontSize: widget.isCompact ? 13.5 : 15.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    fontSize:
+                        (widget.isCompact ? 16.0 : 18.0) * widget.fontScale,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
-                color: _hovered ? Colors.amberAccent : Colors.white54,
               ),
             ],
           ),
@@ -4465,14 +4622,34 @@ class _MissionFeedbackDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
-                // Feedback Message
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isCompact ? 13.5 : 15,
-                    color: Colors.white.withValues(alpha: 0.95),
-                    height: 1.4,
+                // Feedback Message in Light Container with Pure Black Text
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isCompact ? 14 : 18,
+                    vertical: isCompact ? 10 : 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isCompact ? 15.5 : 17.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      height: 1.38,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -4659,14 +4836,34 @@ class _GameOverDialog extends StatelessWidget {
                     letterSpacing: 2,
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'Huwag sumuko, Explorer! Gamitin muli ang iyong mapa ng Pilipinas sa Asya upang matutuhan ang mga direksyon at karatig-lugar.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: isCompact ? 13 : 14.5,
-                    color: Colors.white.withValues(alpha: 0.90),
-                    height: 1.4,
+                // Light Container with Pure Black Text
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isCompact ? 14 : 18,
+                    vertical: isCompact ? 10 : 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Huwag sumuko, Explorer! Gamitin muli ang iyong mapa ng Pilipinas sa Asya upang matutuhan ang mga direksyon at karatig-lugar.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: isCompact ? 14.5 : 16.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                      height: 1.38,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -4798,14 +4995,35 @@ class _MissionCompleteDialog extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '“Nagamit mo ang iyong kaalaman sa mapa upang matukoy ang lokasyon ng Pilipinas sa Asya.”',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: isCompact ? 12.5 : 14,
-                      color: Colors.white.withValues(alpha: 0.90),
-                      height: 1.35,
-                      fontStyle: FontStyle.italic,
+                  // Quote in Light Container with Pure Black Text
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isCompact ? 14 : 18,
+                      vertical: isCompact ? 10 : 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.10),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '“Nagamit mo ang iyong kaalaman sa mapa upang matukoy ang lokasyon ng Pilipinas sa Asya.”',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isCompact ? 14.5 : 16.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        height: 1.35,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -5141,13 +5359,52 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
   int? _selectedOptionIndex;
   bool? _isCorrect;
   String? _feedbackMessage;
+  bool _isExpanded = false;
+  double _fontScale = 1.0; // Cycles: 1.0x -> 1.25x -> 1.5x
+
+  void _cycleFontScale() {
+    AudioManager.instance.playClick();
+    setState(() {
+      if (_fontScale == 1.0) {
+        _fontScale = 1.25;
+      } else if (_fontScale == 1.25) {
+        _fontScale = 1.5;
+      } else {
+        _fontScale = 1.0;
+      }
+    });
+  }
+
+  void _toggleExpanded() {
+    AudioManager.instance.playClick();
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final isCompact = widget.isCompact;
     final screen = MediaQuery.sizeOf(context);
-    final maxWidth = screen.width > 700 ? 630.0 : screen.width * 0.94;
-    final maxHeight = screen.height * (isCompact ? 0.48 : 0.44);
+    final maxWidth = screen.width > 700 ? 640.0 : screen.width * 0.95;
+
+    // Mobile modal takes about half the phone height (0.52) comfortably by default
+    // When expanded ("modako sya inig ka tap bitaw para managko ang fonts"), it expands to 0.82
+    final defaultHeight = screen.height * (isCompact ? 0.52 : 0.46);
+    final expandedHeight = screen.height * (isCompact ? 0.82 : 0.74);
+    final currentMaxHeight = _isExpanded ? expandedHeight : defaultHeight;
+
+    final double expansionMultiplier = _isExpanded ? 1.15 : 1.0;
+    final double effectiveFontScale = _fontScale * expansionMultiplier;
+
+    final double promptFontSize =
+        (isCompact ? 18.5 : 20.5) * effectiveFontScale;
+    final double coordsFontSize =
+        (isCompact ? 17.5 : 20.5) * effectiveFontScale;
+    final double optionFontSize =
+        (isCompact ? 16.5 : 18.5) * effectiveFontScale;
+    final double feedbackFontSize =
+        (isCompact ? 14.5 : 16.0) * effectiveFontScale;
 
     final lockedLocations = widget.allLocations
         .where((loc) => !widget.unlockedIds.contains(loc.id))
@@ -5155,8 +5412,10 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
 
     // If all locations unlocked, show completion celebration
     if (lockedLocations.isEmpty) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
+        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: currentMaxHeight),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(22),
           child: BackdropFilter(
@@ -5183,7 +5442,7 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Jomhuria',
-                        fontSize: isCompact ? 30 : 38,
+                        fontSize: isCompact ? 32 : 40,
                         color: const Color(0xFF00E676),
                         height: 0.85,
                         letterSpacing: 1.5,
@@ -5194,9 +5453,9 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                       'Tagumpay mong natukoy ang lahat ng mga lokasyon gamit ang latitud at longhitud! Malaya mo nang magagalugad ang buong mapa o simulan muli ang paghahanap.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: isCompact ? 12 : 13.5,
+                        fontSize: isCompact ? 13.5 : 15.0,
                         color: Colors.white.withValues(alpha: 0.90),
-                        height: 1.35,
+                        height: 1.38,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -5211,7 +5470,8 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 18, vertical: 10),
                       ),
                       icon: const Icon(Icons.refresh_rounded, size: 18),
                       label: const Text(
@@ -5243,15 +5503,18 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
     options.shuffle(math.Random(targetLocation.id.hashCode + 1));
 
     final isWater = targetLocation.geoCategory == GeoCategory.insular &&
-        (targetLocation.id.contains('sea') || targetLocation.id.contains('ocean'));
+        (targetLocation.id.contains('sea') ||
+            targetLocation.id.contains('ocean'));
     final questionPrompt = isWater
         ? 'Anong anyong tubig ang matatagpuan sa koordinadang:'
         : 'Aling bansa o pulo ang matatagpuan sa koordinadang:';
 
-    return ConstrainedBox(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
       constraints: BoxConstraints(
         maxWidth: maxWidth,
-        maxHeight: maxHeight,
+        maxHeight: currentMaxHeight,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22),
@@ -5292,7 +5555,7 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title Row: Mode tag & Unlocked count
+                  // Title Row: Mode tag, Progress count, Font zoom, and Card expand/collapse
                   Row(
                     children: [
                       Container(
@@ -5318,31 +5581,119 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       Expanded(
-                        child: Text(
-                          'Punto: ${widget.unlockedIds.length} / ${widget.allLocations.length} Nabuksan',
-                          style: TextStyle(
-                            fontSize: isCompact ? 12 : 13.5,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white70,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: _toggleExpanded,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'Punto: ${widget.unlockedIds.length} / ${widget.allLocations.length} Nabuksan',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: isCompact ? 12 : 13.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      _isExpanded
+                                          ? Icons.unfold_less_rounded
+                                          : Icons.unfold_more_rounded,
+                                      size: 13,
+                                      color: Colors.white70,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      _isExpanded ? 'Paliitin' : 'Palakihin',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.white70,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 4),
+
+                      // Font Zoom Button (Cycles 100% -> 125% -> 150%)
+                      IconButton(
+                        icon: Icon(
+                          _fontScale == 1.5
+                              ? Icons.text_fields_rounded
+                              : Icons.format_size_rounded,
+                          color: _fontScale > 1.0 ? Colors.amberAccent : Colors.white,
+                          size: isCompact ? 22 : 24,
+                        ),
+                        tooltip: 'Palakihin ang Font (${(_fontScale * 100).toInt()}%)',
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        onPressed: _cycleFontScale,
+                      ),
+
+                      // Expand / Collapse Card Button
+                      IconButton(
+                        icon: Icon(
+                          _isExpanded
+                              ? Icons.fullscreen_exit_rounded
+                              : Icons.fullscreen_rounded,
+                          color: _isExpanded ? const Color(0xFF00E676) : Colors.white,
+                          size: isCompact ? 24 : 26,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        constraints: const BoxConstraints(),
+                        tooltip: _isExpanded ? 'Paliitin ang Card' : 'Palakihin ang Card',
+                        onPressed: _toggleExpanded,
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
 
-                  // Prompt
-                  Text(
-                    questionPrompt,
-                    style: TextStyle(
-                      fontSize: isCompact ? 13.5 : 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                  // Prompt with Light Background & Pure Black Text
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(isCompact ? 12 : 14),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFCBD5E1),
+                        width: 1.4,
+                      ),
+                    ),
+                    child: Text(
+                      questionPrompt,
+                      style: TextStyle(
+                        fontSize: promptFontSize,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        height: 1.42,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
 
                   // Big Glowing Coordinates Banner
                   Container(
@@ -5364,14 +5715,14 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                         const Icon(
                           Icons.location_searching_rounded,
                           color: Color(0xFF00E5FF),
-                          size: 18,
+                          size: 20,
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             targetLocation.coordinates,
                             style: TextStyle(
-                              fontSize: isCompact ? 14.5 : 17,
+                              fontSize: coordsFontSize,
                               fontWeight: FontWeight.bold,
                               color: const Color(0xFF00E5FF),
                               letterSpacing: 0.6,
@@ -5383,39 +5734,42 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                   ),
                   const SizedBox(height: 10),
 
-                  // 3 Choice Buttons
+                  // 3 Choice Buttons with Light Background & High Contrast Text
                   for (int i = 0; i < options.length; i++) ...[
                     Builder(builder: (context) {
                       final optionLoc = options[i];
                       final isSelected = _selectedOptionIndex == i;
                       final isTarget = optionLoc.id == targetLocation.id;
 
-                      Color btnBorder = Colors.white24;
-                      Color btnBg = Colors.white.withValues(alpha: 0.08);
-                      Color btnText = Colors.white;
+                      Color btnBorder = const Color(0xFFCBD5E1);
+                      Color btnBg = const Color(0xFFFFFFFF);
+                      Color btnText = Colors.black;
 
                       if (isSelected && _isCorrect == true) {
-                        btnBorder = const Color(0xFF00E676);
-                        btnBg = const Color(0xFF00E676).withValues(alpha: 0.25);
+                        btnBorder = const Color(0xFF16A34A);
+                        btnBg = const Color(0xFFDCFCE7);
+                        btnText = const Color(0xFF14532D);
                       } else if (isSelected && _isCorrect == false) {
-                        btnBorder = const Color(0xFFFF5252);
-                        btnBg = const Color(0xFFFF5252).withValues(alpha: 0.25);
+                        btnBorder = const Color(0xFFDC2626);
+                        btnBg = const Color(0xFFFEE2E2);
+                        btnText = const Color(0xFF7F1D1D);
                       }
 
                       return Container(
-                        margin: const EdgeInsets.only(bottom: 7),
+                        margin: const EdgeInsets.only(bottom: 8),
                         child: Material(
                           color: btnBg,
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(13),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(11),
+                            borderRadius: BorderRadius.circular(13),
                             onTap: () {
                               AudioManager.instance.playClick();
                               setState(() {
                                 _selectedOptionIndex = i;
                                 _isCorrect = isTarget;
                                 if (isTarget) {
-                                  _feedbackMessage = 'Tumpak! Nabuksan mo ang ${targetLocation.title}!';
+                                  _feedbackMessage =
+                                      'Tumpak! Nabuksan mo ang ${targetLocation.title}!';
                                 } else {
                                   _feedbackMessage =
                                       'Maling sagot! Subukang muli. Pahiwatig: Ito ay matatagpuan sa ${targetLocation.category}.';
@@ -5424,7 +5778,8 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                               if (isTarget) {
                                 AudioManager.instance.playCorrect();
                                 widget.onCorrectAnswer(targetLocation);
-                                Future.delayed(const Duration(milliseconds: 1400), () {
+                                Future.delayed(
+                                    const Duration(milliseconds: 1400), () {
                                   if (mounted) {
                                     setState(() {
                                       _selectedOptionIndex = null;
@@ -5439,40 +5794,57 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: isCompact ? 12 : 16,
-                                vertical: isCompact ? 9 : 11,
+                                horizontal: isCompact ? 14 : 18,
+                                vertical: isCompact ? 11 : 14,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(11),
-                                border: Border.all(color: btnBorder, width: 1.2),
+                                borderRadius: BorderRadius.circular(13),
+                                border:
+                                    Border.all(color: btnBorder, width: 1.5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Row(
                                 children: [
-                                  Text(
-                                    '${String.fromCharCode(65 + i)}.',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: btnText,
-                                      fontSize: isCompact ? 13 : 14.5,
+                                  Container(
+                                    width: 28,
+                                    height: 28,
+                                    alignment: Alignment.center,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFF0F172A),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      String.fromCharCode(65 + i),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 12),
                                   Expanded(
                                     child: Text(
                                       optionLoc.title,
                                       style: TextStyle(
                                         color: btnText,
-                                        fontSize: isCompact ? 13 : 14.5,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: optionFontSize,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                   if (isSelected && _isCorrect == true)
                                     const Icon(Icons.check_circle_rounded,
-                                        color: Color(0xFF00E676), size: 18)
+                                        color: Color(0xFF16A34A), size: 22)
                                   else if (isSelected && _isCorrect == false)
                                     const Icon(Icons.cancel_rounded,
-                                        color: Color(0xFFFF5252), size: 18),
+                                        color: Color(0xFFDC2626), size: 22),
                                 ],
                               ),
                             ),
@@ -5486,21 +5858,28 @@ class _CoordinateQuestPanelState extends State<_CoordinateQuestPanel> {
                   if (_feedbackMessage != null) ...[
                     Container(
                       margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                         color: _isCorrect == true
-                            ? const Color(0xFF00E676).withValues(alpha: 0.15)
-                            : const Color(0xFFFF5252).withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
+                            ? const Color(0xFFDCFCE7)
+                            : const Color(0xFFFEE2E2),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: _isCorrect == true
+                              ? const Color(0xFF16A34A)
+                              : const Color(0xFFDC2626),
+                          width: 1.2,
+                        ),
                       ),
                       child: Text(
                         _feedbackMessage!,
                         style: TextStyle(
-                          fontSize: isCompact ? 11.5 : 12.5,
-                          fontWeight: FontWeight.w600,
+                          fontSize: feedbackFontSize,
+                          fontWeight: FontWeight.w700,
                           color: _isCorrect == true
-                              ? const Color(0xFF00E676)
-                              : const Color(0xFFFF8A80),
+                              ? const Color(0xFF14532D)
+                              : const Color(0xFF7F1D1D),
                         ),
                       ),
                     ),
