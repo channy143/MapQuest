@@ -252,7 +252,7 @@ class _TreasureHuntScreenState extends State<TreasureHuntScreen>
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
-                  'I-tap kahit saan para isara',
+                  'Pindutin kahit saan para isara',
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),
