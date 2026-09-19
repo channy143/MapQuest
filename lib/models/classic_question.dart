@@ -188,3 +188,161 @@ class ClassicQuestionRegistry {
     return list.take(count).toList();
   }
 }
+
+/// Registry containing the 14 official revised Araling Panlipunan questions
+/// for the "Subukin ang Kaalaman!" game mode.
+class SubukinKaalamanRegistry {
+  static const String instruction =
+      'Handa ka na bang subukin ang iyong kaalaman? Sagutin ang bawat tanong. Basahin ng mabuti bago pumili ng tamang sagot sa mga pagpipilian. Bawat tamang sagot ay may puntos at gantimpala.';
+
+  static const List<ClassicQuestion> questions = [
+    // Tanong 1: Anong anyong tubig ang matatagpuan sa buong silangan ng Pilipinas? -> Pacific Ocean
+    ClassicQuestion(
+      id: 'sk_1',
+      prompt: 'Anong anyong tubig ang matatagpuan sa buong silangan ng Pilipinas?',
+      options: ['Pacific Ocean', 'Celebes Sea', 'South China Sea'],
+      correctIndex: 0,
+      explanation:
+          'Ang Pacific Ocean ang pinakamalaking karagatan sa daigdig na sumasaklaw sa buong silangang bahagi ng Pilipinas.',
+    ),
+
+    // Tanong 2: Kanlurang baybayin EEZ -> West Philippine Sea
+    ClassicQuestion(
+      id: 'sk_2',
+      prompt:
+          'Anong anyong tubig ang nasa kanlurang baybayin ng Pilipinas na sakop ng Exclusive Economic Zone (EEZ) ng bansa?',
+      options: ['Sulu Sea', 'Celebes Sea', 'West Philippine Sea'],
+      correctIndex: 2,
+      explanation:
+          'Ang West Philippine Sea ang katubigan sa kanlurang baybayin ng Pilipinas na sakop ng Exclusive Economic Zone (EEZ).',
+    ),
+
+    // Tanong 3: Hilagang-kanluran patawid sa West Philippine Sea -> China
+    ClassicQuestion(
+      id: 'sk_3',
+      prompt:
+          'Ano ang malaking bansa na nasa hilagang-kanluran ng Pilipinas patawid sa West Philippine Sea?',
+      options: ['China', 'Indonesia', 'Japan'],
+      correctIndex: 0,
+      explanation:
+          'Ang China ang malaking bansa sa kontinente ng Asya na nasa hilagang-kanluran ng Pilipinas.',
+    ),
+
+    // Tanong 4: Mas malapit (Taiwan vs Japan) -> Taiwan
+    ClassicQuestion(
+      id: 'sk_4',
+      prompt: 'Aling bansa ang mas malapit sa Pilipinas?',
+      options: ['Taiwan', 'Japan'],
+      correctIndex: 0,
+      explanation:
+          'Ang Taiwan ang pinakamalapit na karatig-bansa sa hilaga ng Pilipinas, humigit-kumulang 350 km lamang ang layo mula sa Batanes.',
+    ),
+
+    // Tanong 5: Kanluran ng Pilipinas, baybaying hugis "S" -> Vietnam
+    ClassicQuestion(
+      id: 'sk_5',
+      prompt:
+          'Anong bansa ang matatagpuan sa kanluran ng Pilipinas na may baybaying hugis titik "S"?',
+      options: ['Vietnam', 'Thailand', 'Cambodia'],
+      correctIndex: 0,
+      explanation:
+          'Ang Vietnam ay may mahabang baybaying hugis titik "S" sa silangang baybayin ng Indochina Peninsula.',
+    ),
+
+    // Tanong 6: Timog-kanluran ng Pilipinas -> Brunei
+    ClassicQuestion(
+      id: 'sk_6',
+      prompt: 'Anong bansa ang nasa timog-kanluran ng Pilipinas?',
+      options: ['Brunei', 'Taiwan', 'Japan'],
+      correctIndex: 0,
+      explanation:
+          'Ang Brunei ay matatagpuan sa hilagang bahagi ng isla ng Borneo sa timog-kanluran ng Pilipinas.',
+    ),
+
+    // Tanong 7: Silangan ng Pilipinas -> Guam
+    ClassicQuestion(
+      id: 'sk_7',
+      prompt: 'Anong bansa ang nasa silangan ng Pilipinas?',
+      options: ['Vietnam', 'Thailand', 'Guam'],
+      correctIndex: 2,
+      explanation:
+          'Ang Guam ay matatagpuan sa Karagatang Pasipiko sa silangan ng Pilipinas.',
+    ),
+
+    // Tanong 8: Kanluran ng Pilipinas -> Cambodia
+    ClassicQuestion(
+      id: 'sk_8',
+      prompt: 'Anong bansa ang nasa kanluran ng Pilipinas?',
+      options: ['Cambodia', 'Palau', 'Japan'],
+      correctIndex: 0,
+      explanation:
+          'Ang Cambodia ay matatagpuan sa kanluran ng Pilipinas sa Timog-Silangang Asya.',
+    ),
+
+    // Tanong 9: Nahati sa dalawa, Peninsular at Silangang Malaysia -> Malaysia
+    ClassicQuestion(
+      id: 'sk_9',
+      prompt:
+          'Anong bansa ang nahati sa dalawa, ang Peninsular Malaysia at Silangang Malaysia?',
+      options: ['Indonesia', 'Malaysia', 'Singapore'],
+      correctIndex: 1,
+      explanation:
+          'Ang Malaysia ay nahahati sa dalawang pangunahing bahagi: Peninsular Malaysia at Silangang Malaysia (Sabah at Sarawak).',
+    ),
+
+    // Tanong 10: Lokasyon batay sa nakapaligid na anyong tubig -> Lokasyong Insular
+    ClassicQuestion(
+      id: 'sk_10',
+      prompt:
+          'Ano ang tawag sa pagtukoy ng lokasyon batay sa mga nakapaligid na anyong tubig?',
+      options: ['Lokasyong Insular', 'Lokasyong Bisinal', 'Tiyak na Lokasyon'],
+      correctIndex: 0,
+      explanation:
+          'Ang Lokasyong Insular ay ang pagtukoy ng lokasyon batay sa mga nakapaligid na dagat at karagatan.',
+    ),
+
+    // Tanong 11: Lokasyon batay sa nakapaligid na bansa o anyong lupa -> Lokasyong Bisinal
+    ClassicQuestion(
+      id: 'sk_11',
+      prompt:
+          'Ano ang tawag sa pagtukoy ng lokasyon batay sa mga nakapaligid na bansa o anyong lupa?',
+      options: ['Lokasyong Bisinal', 'Lokasyong Insular', 'Relatibong Lokasyon'],
+      correctIndex: 0,
+      explanation:
+          'Ang Lokasyong Bisinal ay ang pagtukoy ng lokasyon batay sa mga karatig-bansa o kalupaan sa paligid.',
+    ),
+
+    // Tanong 12: Eksakto at ispesipikong kinalalagyan gamit latitud at longhitud -> Tiyak na Lokasyon
+    ClassicQuestion(
+      id: 'sk_12',
+      prompt:
+          'Ano ang tumutukoy sa eksakto at ispesipikong kinalalagyan ng isang lugar gamit ang latitud at longhitud?',
+      options: ['Tiyak na Lokasyon', 'Relatibong Lokasyon', 'Lokasyong Bisinal'],
+      correctIndex: 0,
+      explanation:
+          'Ang Tiyak na Lokasyon (Absolute Location) ay tinutukoy gamit ang mga degree ng latitud at longhitud.',
+    ),
+
+    // Tanong 13: Patayong guhit sa mapa o globo -> Longhitud
+    ClassicQuestion(
+      id: 'sk_13',
+      prompt: 'Ano ang mga patayong guhit sa mapa o globo?',
+      options: ['Longhitud', 'Latitud', 'Ekwador'],
+      correctIndex: 0,
+      explanation:
+          'Ang mga linyang Longhitud (meridians) ay ang mga patayong guhit na tumatakbo mula Hilagang Polo patungong Timog Polo.',
+    ),
+
+    // Tanong 14: Kinalalagyan batay sa direksyon at karatig na bansa/katubigan -> Relatibong Lokasyon
+    ClassicQuestion(
+      id: 'sk_14',
+      prompt:
+          'Tumutukoy sa kinalalagyan ng isang bansa batay sa direksyon at mga bansa o katubigang nakapaligid nito.',
+      options: ['Relatibong Lokasyon', 'Tiyak na Lokasyon', 'Absolute Location'],
+      correctIndex: 0,
+      explanation:
+          'Ang Relatibong Lokasyon ay tumutukoy sa kinaroroonan ng lugar batay sa mga nakapaligid ditong mga anyong lupa at tubig.',
+    ),
+  ];
+}
+

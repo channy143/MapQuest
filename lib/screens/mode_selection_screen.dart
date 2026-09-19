@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../models/classic_question.dart';
 import '../services/audio_manager.dart';
 import '../widgets/drifting_clouds_layer.dart';
 import '../widgets/game_mode_picker_modal.dart';
 import 'classic_quiz_screen.dart';
 import 'game_screen.dart';
 import 'home_screen.dart';
+import 'treasure_hunt_screen.dart';
 
 /// The screen shown after the home screen outro, letting the player pick
 /// between the two game modes (Learning and Game).
@@ -192,6 +194,26 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
           destinationBuilder: (context) => GameScreen(
             selectedMode: 'mode ng laro',
             gameSubMode: GameSubMode.level,
+            onBack: _returnToModeSelection,
+          ),
+        );
+        break;
+      case GameSubModeSelection.hanapinKayamanan:
+        _startModeTransition(
+          modeName: 'Hanapin ang Kayamanan!',
+          destinationBuilder: (context) => TreasureHuntScreen(
+            onBack: _returnToModeSelection,
+          ),
+        );
+        break;
+      case GameSubModeSelection.subukinKaalaman:
+        _startModeTransition(
+          modeName: 'Subukin ang Kaalaman!',
+          destinationBuilder: (context) => ClassicQuizScreen(
+            title: 'SUBUKIN ANG KAALAMAN!',
+            subtitle: '14 na Tanong • Araling Panlipunan',
+            questions: SubukinKaalamanRegistry.questions,
+            showInstructions: true,
             onBack: _returnToModeSelection,
           ),
         );

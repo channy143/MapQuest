@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../models/game_mission.dart';
 import '../services/audio_manager.dart';
 import '../services/coordinate_quest_storage.dart';
+import '../services/game_progress_storage.dart';
 import '../services/map_point_storage.dart';
 import 'mode_selection_screen.dart';
 
@@ -1052,6 +1053,9 @@ class _GameScreenState extends State<GameScreen>
         _currentMissionIndex >= GameMissionRegistry.missions.length - 1;
 
     if (isLastMission) {
+      GameProgressStorage.recordGameCompleted(
+        GameProgressStorage.gameHanapinLokasyon,
+      );
       setState(() {
         _isGameCompleted = true;
       });

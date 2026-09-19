@@ -4,19 +4,29 @@ import 'package:flutter/material.dart';
 
 import '../models/classic_question.dart';
 import '../services/audio_manager.dart';
+import '../services/game_progress_storage.dart';
 import 'home_screen.dart';
 import 'mode_selection_screen.dart';
 
-/// Classic Mode Quiz Screen:
-/// A fast-paced, mapless quiz with 10 randomized 3-choice questions about
-/// Philippine and Asian geography based on Grade 4 Araling Panlipunan.
+/// Quiz Screen for Subukin ang Kaalaman! and Classic Quiz.
+///
+/// Features Grade 4 Araling Panlipunan geography MCQs without a map,
+/// tracking points and recording game mode completion.
 class ClassicQuizScreen extends StatefulWidget {
   const ClassicQuizScreen({
     super.key,
     this.onBack,
+    this.title = 'KLASIKONG PAGSUSULIT',
+    this.subtitle,
+    this.questions,
+    this.showInstructions = false,
   });
 
   final VoidCallback? onBack;
+  final String title;
+  final String? subtitle;
+  final List<ClassicQuestion>? questions;
+  final bool showInstructions;
 
   @override
   State<ClassicQuizScreen> createState() => _ClassicQuizScreenState();
@@ -31,6 +41,8 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
   int _correctCount = 0;
   int _score = 0;
   bool _isQuizCompleted = false;
+  late bool _showInstructions;
+  bool _newlyEarnedUltimate = false;
   double _fontScale = 1.0; // Cycles: 1.0x -> 1.25x -> 1.5x
 
   void _cycleFontScale() {
@@ -65,12 +77,20 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
   @override
   void initState() {
     super.initState();
+    _showInstructions = widget.showInstructions;
     _startNewQuiz();
   }
 
   void _startNewQuiz() {
     setState(() {
-      _questions = ClassicQuestionRegistry.getRandomQuestions(10);
+      if (widget.questions != null) {
+        _questions = List.from(widget.questions!);
+      } else if (widget.title.contains('SUBUKIN') ||
+          widget.title.contains('Kaalaman')) {
+        _questions = List.from(SubukinKaalamanRegistry.questions);
+      } else {
+        _questions = ClassicQuestionRegistry.getRandomQuestions(10);
+      }
       _currentIndex = 0;
       _selectedOptionIndex = null;
       _hasAnswered = false;
@@ -109,7 +129,8 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
     });
   }
 
-  void _onNextQuestion() {
+  Future<void> _onNextQuestion() async {
+    AudioManager.instance.playClick();
     if (_currentIndex < _questions.length - 1) {
       setState(() {
         _currentIndex++;
@@ -118,10 +139,14 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
       });
       _cardAnimController.forward(from: 0.0);
     } else {
+      final newlyEarned = await GameProgressStorage.recordGameCompleted(
+        GameProgressStorage.gameSubukinKaalaman,
+      );
       setState(() {
         _isQuizCompleted = true;
+        _newlyEarnedUltimate = newlyEarned;
       });
-      if (_correctCount >= 6) {
+      if (_correctCount >= (_questions.length * 0.6).round()) {
         AudioManager.instance.playCorrect();
       } else {
         AudioManager.instance.playWrong();
@@ -174,42 +199,47 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF07143F),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF0C27DA),
-                Color(0xFF07164C),
-                Color(0xFF030D2A),
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                // Top Header Bar
-                _buildHeader(isCompact),
-
-                // Main Quiz Content / Completed Card
-                Expanded(
-                  child: Center(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isCompact ? 16 : 24,
-                        vertical: isCompact ? 3 : 5,
-                      ),
-                      child: _isQuizCompleted
-                          ? _buildCompletionCard(isCompact)
-                          : _buildQuestionCard(isCompact),
-                    ),
-                  ),
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF0C27DA),
+                    Color(0xFF07164C),
+                    Color(0xFF030D2A),
+                  ],
                 ),
-              ],
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // Top Header Bar
+                    _buildHeader(isCompact),
+
+                    // Main Quiz Content / Completed Card
+                    Expanded(
+                      child: Center(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isCompact ? 16 : 24,
+                            vertical: isCompact ? 3 : 5,
+                          ),
+                          child: _isQuizCompleted
+                              ? _buildCompletionCard(isCompact)
+                              : _buildQuestionCard(isCompact),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
+            if (_showInstructions) _buildInstructionOverlay(isCompact),
+          ],
         ),
       ),
     );
@@ -263,7 +293,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'KLASIKONG PAGSUSULIT',
+                      widget.title,
                       style: TextStyle(
                         fontFamily: 'Jomhuria',
                         fontSize: isCompact ? 24 : 28,
@@ -273,7 +303,8 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                       ),
                     ),
                     Text(
-                      '10 Tanong • 3 Pagpipilian',
+                      widget.subtitle ??
+                          '${_questions.length} Tanong • Araling Panlipunan',
                       style: TextStyle(
                         fontSize: isCompact ? 10.5 : 11.5,
                         color: Colors.white.withValues(alpha: 0.75),
@@ -395,7 +426,7 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                             ),
                           ),
                           child: Text(
-                            'TANONG ${_currentIndex + 1} NG 10',
+                            'TANONG ${_currentIndex + 1} NG ${_questions.length}',
                             style: const TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.bold,
@@ -811,13 +842,40 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
                     ),
                   ),
                 ),
+                if (_newlyEarnedUltimate) ...[
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00E5FF).withValues(alpha: 0.20),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFF00E5FF), width: 1.5),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('👑', style: TextStyle(fontSize: 20)),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Ultimate Explorer',
+                          style: TextStyle(
+                            fontSize: isCompact ? 14 : 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF00E5FF),
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 18),
 
                 // Score Details
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildStatCol('TAMANG SAGOT', '$_correctCount / 10', Colors.white),
+                    _buildStatCol('TAMANG SAGOT', '$_correctCount / ${_questions.length}', Colors.white),
                     Container(width: 1, height: 36, color: Colors.white24),
                     _buildStatCol('KABUUANG PUNTOS', '$_score', Colors.amberAccent),
                     Container(width: 1, height: 36, color: Colors.white24),
@@ -940,6 +998,107 @@ class _ClassicQuizScreenState extends State<ClassicQuizScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildInstructionOverlay(bool isCompact) {
+    return Container(
+      color: Colors.black.withValues(alpha: 0.80),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(20),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 540),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              padding: EdgeInsets.all(isCompact ? 20 : 28),
+              decoration: BoxDecoration(
+                color: const Color(0xFF081544).withValues(alpha: 0.95),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Colors.amber,
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.amber.withValues(alpha: 0.35),
+                    blurRadius: 30,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🧠📝', style: TextStyle(fontSize: 44)),
+                  const SizedBox(height: 6),
+                  Text(
+                    widget.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Jomhuria',
+                      fontSize: isCompact ? 36 : 46,
+                      color: Colors.amber,
+                      height: 0.85,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFCBD5E1), width: 1.2),
+                    ),
+                    child: Text(
+                      SubukinKaalamanRegistry.instruction,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isCompact ? 14.5 : 16.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      AudioManager.instance.playClick();
+                      setState(() {
+                        _showInstructions = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: const Color(0xFF081544),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 28,
+                        vertical: 14,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 6,
+                    ),
+                    child: Text(
+                      'SIMULAN ANG PAGSUSULIT 📝',
+                      style: TextStyle(
+                        fontSize: isCompact ? 14 : 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -7,6 +7,8 @@ import '../services/audio_manager.dart';
 /// Selection callback options for Game Mode sub-modes.
 enum GameSubModeSelection {
   level,
+  hanapinKayamanan,
+  subukinKaalaman,
   classic,
   coordinates,
 }
@@ -137,40 +139,40 @@ class GameModePickerModal extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
 
-                        // Option 2: Klasikong Pagsusulit
+                        // Option 2: Hanapin ang Kayamanan!
                         _ModeOptionCard(
-                          icon: Icons.quiz_rounded,
-                          accentColor: const Color(0xFFFFD54F),
-                          tagText: 'HAMUNIN ANG SARILI!',
-                          title: 'Klasikong Pagsusulit',
+                          icon: Icons.auto_awesome_rounded,
+                          accentColor: const Color(0xFFFFB300),
+                          tagText: 'BAGONG LARO!',
+                          title: 'Hanapin ang Kayamanan!',
                           description:
-                              'Sagutin ang 10 tanong at tingnan kung ilang puntos ang makukuha mo!',
+                              'Sundan ang mga pahiwatig at larawan upang matukoy kung saan nakatago ang kayamanan!',
                           isCompact: isCompact,
-                          onTap: () => onSelectMode(GameSubModeSelection.classic),
+                          onTap: () => onSelectMode(GameSubModeSelection.hanapinKayamanan),
                         ),
                         const SizedBox(height: 12),
 
-                        // Option 3: Coordinate Quest
+                        // Option 3: Subukin ang Kaalaman!
                         _ModeOptionCard(
-                          icon: Icons.my_location_rounded,
+                          icon: Icons.quiz_rounded,
                           accentColor: const Color(0xFF00E676),
-                          tagText: 'HANAPIN!',
-                          title: 'Coordinate Quest',
+                          tagText: '14 NA TANONG!',
+                          title: 'Subukin ang Kaalaman!',
                           description:
-                              'Gamitin ang latitude at longitude para mahanap ang tamang lugar!',
+                              'Subukin ang iyong kaalaman sa heograpiya ng Pilipinas at mga karatig-bansa nang walang mapa!',
                           isCompact: isCompact,
-                          onTap: () => onSelectMode(GameSubModeSelection.coordinates),
+                          onTap: () => onSelectMode(GameSubModeSelection.subukinKaalaman),
                         ),
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
   }
 }
 

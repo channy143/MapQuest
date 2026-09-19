@@ -119,16 +119,16 @@ void main() {
       // Verify header and 3 mode cards
       expect(find.text('PUMILI NG LARO!'), findsOneWidget);
       expect(find.text('Hanapin ang Lokasyon!'), findsOneWidget);
-      expect(find.text('Klasikong Pagsusulit'), findsOneWidget);
-      expect(find.text('Coordinate Quest'), findsOneWidget);
+      expect(find.text('Hanapin ang Kayamanan!'), findsOneWidget);
+      expect(find.text('Subukin ang Kaalaman!'), findsOneWidget);
 
       // Verify text widget has decoration none (no yellow underlines)
       final titleWidget = tester.widget<Text>(find.text('PUMILI NG LARO!'));
       expect(titleWidget.style?.decoration, TextDecoration.none);
 
-      // Tap Classic Mode
-      await tester.tap(find.text('Klasikong Pagsusulit'));
-      expect(selected, GameSubModeSelection.classic);
+      // Tap Hanapin ang Kayamanan!
+      await tester.tap(find.text('Hanapin ang Kayamanan!'));
+      expect(selected, GameSubModeSelection.hanapinKayamanan);
 
       // Tap Cancel / Close icon
       final closeIcon = find.byIcon(Icons.close_rounded);

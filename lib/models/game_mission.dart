@@ -79,6 +79,18 @@ class GameMissionRegistry {
       subtitle: '',
       icon: '🧭',
     ),
+    GameBadge(
+      id: 'map_detective',
+      title: 'Map Detective',
+      subtitle: '',
+      icon: '🔍',
+    ),
+    GameBadge(
+      id: 'ultimate_explorer',
+      title: 'Ultimate Explorer',
+      subtitle: '',
+      icon: '👑',
+    ),
   ];
 
   static const List<GameMission> missions = [

@@ -95,12 +95,14 @@ void main() {
       expect(m10.isCorrectChoice(0), isTrue); // 4-21 N, 116-127 E
     });
 
-    test('verifies single Direction Master badge in registry with no subtitle', () {
-      expect(GameMissionRegistry.availableBadges.length, 1);
+    test('verifies available badges in registry with no subtitle', () {
+      expect(GameMissionRegistry.availableBadges.length, 3);
       final badge = GameMissionRegistry.availableBadges.first;
       expect(badge.id, 'direction_master');
       expect(badge.title, 'Direction Master');
-      expect(badge.subtitle, isEmpty);
+      for (final b in GameMissionRegistry.availableBadges) {
+        expect(b.subtitle, isEmpty);
+      }
     });
   });
 
