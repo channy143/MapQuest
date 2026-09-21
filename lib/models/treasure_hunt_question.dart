@@ -53,7 +53,7 @@ class TreasureHuntQuestion {
 /// Registry of the 10 Grade 4 treasure hunt missions in MapQuest.
 class TreasureHuntRegistry {
   static const String modeInstruction =
-      'Basahin nang mabuti ang bawat pahiwatig upang malaman kung saan nakatago ang kayamanan. Piliin o i-type ang tamang sagot. Bawat tamang sagot ay may puntos! Handa ka na? Hanapin ang kayamanan!';
+      'Basahin nang mabuti ang bawat pahiwatig upang malaman kung saan nakatago ang kayamanan. Piliin ang tamang sagot. Bawat tamang sagot ay may puntos! Handa ka na? Hanapin ang kayamanan!';
 
   static const List<TreasureHuntQuestion> questions = [
     // Question 1: School in country north of Philippines -> Taiwan (Option B)
@@ -63,7 +63,7 @@ class TreasureHuntRegistry {
           'Ang kayamanan ay nasa paaralan sa bansang nasa hilaga ng Pilipinas. Sa anong bansa ito matatagpuan?',
       correctAnswer: 'Taiwan',
       acceptableAnswers: ['taiwan', 'republic of china', 'roc'],
-      imageAsset: 'assets/images/treasure_hunt/q1_school.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Taiwan.jpg',
       options: ['Japan', 'Taiwan', 'South Korea'],
       isTypingQuestion: false,
       explanation:
@@ -74,28 +74,28 @@ class TreasureHuntRegistry {
     TreasureHuntQuestion(
       id: 2,
       prompt:
-          'Ang kayamanan ay nasa barkong naglalayag sa timog-kanluran ng Pilipinas. Saang karagatan ito matatagpuan?',
+          'Ang kayamanan ay nasa barkong naglalayag sa timog-kanluran ng Pilipinas. Saang dagat ito matatagpuan?',
       correctAnswer: 'Sulu Sea',
       acceptableAnswers: ['sulu sea', 'dagat sulu', 'sulu'],
-      imageAsset: 'assets/images/treasure_hunt/q2_ship_sulu.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Sulu Sea.jpg',
       options: ['Celebes Sea', 'Philippine Sea', 'Sulu Sea'],
-      isTypingQuestion: true,
+      isTypingQuestion: false,
       explanation:
-          'Ang Sulu Sea ay matatagpuan sa timog-kanluran ng Pilipinas, napalilibutan ng Palawan, Visayas, at Sulu Archipelago.',
+          'Ang Sulu Sea ay isang dagat na matatagpuan sa timog-kanluran ng Pilipinas, napalilibutan ng Palawan, Visayas, at Sulu Archipelago.',
     ),
 
-    // Question 3: City building in country northeast/northwest -> China (Option A)
+    // Question 3: City building in country northwest -> China (Option A)
     TreasureHuntQuestion(
       id: 3,
       prompt:
-          'Ang kayamanan ay nasa siyudad sa bansang sa hilagang-silangan ng Pilipinas. Saang bansa ito matatagpuan?',
+          'Ang kayamanan ay nasa siyudad sa bansang nasa hilagang-kanluran ng Pilipinas. Saang bansa ito matatagpuan?',
       correctAnswer: 'China',
       acceptableAnswers: ['china', 'tsina', 'prc'],
-      imageAsset: 'assets/images/treasure_hunt/q3_city_china.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/China.jpg',
       options: ['China', 'Mongolia', 'Russia'],
       isTypingQuestion: false,
       explanation:
-          'Ang China ay malaking bansa sa kontinente ng Asya sa hilaga ng Pilipinas.',
+          'Ang China ay malaking bansa sa kontinente ng Asya sa hilagang-kanluran ng Pilipinas.',
     ),
 
     // Question 4: Cave in country south -> Indonesia (Option B)
@@ -105,9 +105,9 @@ class TreasureHuntRegistry {
           'Ang kayamanan ay nakatago sa kuweba sa bansang nasa timog ng Pilipinas. Saang bansa ito mahahanap?',
       correctAnswer: 'Indonesia',
       acceptableAnswers: ['indonesia', 'indonesya'],
-      imageAsset: 'assets/images/treasure_hunt/q4_cave_indonesia.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Indonesia.jpg',
       options: ['Malaysia', 'Indonesia', 'East Timor'],
-      isTypingQuestion: true,
+      isTypingQuestion: false,
       explanation:
           'Ang Indonesia ay ang pinakamalaking kapuluang bansa na nasa direktang timog ng Pilipinas.',
     ),
@@ -119,8 +119,8 @@ class TreasureHuntRegistry {
           'Ang kayamanan ay nasa palaruan (playground) sa bansang nasa kanluran ng Pilipinas. Saang bansa ito matatagpuan?',
       correctAnswer: 'Vietnam',
       acceptableAnswers: ['vietnam', 'biyetnam'],
-      imageAsset: 'assets/images/treasure_hunt/q5_playground_vietnam.png',
-      options: ['Laos', 'Cambodia', 'Vietnam'],
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Vietnam.jpg',
+      options: ['Japan', 'Indonesia', 'Vietnam'],
       isTypingQuestion: false,
       explanation:
           'Ang Vietnam ay may baybaying hugis titik "S" sa kanluran ng Pilipinas patawid sa West Philippine Sea.',
@@ -133,9 +133,9 @@ class TreasureHuntRegistry {
           'Ang kayamanan ay nasa isla na nasa timog-silangan ng Pilipinas. Saang bansa ito makikita?',
       correctAnswer: 'Palau',
       acceptableAnswers: ['palau', 'belau'],
-      imageAsset: 'assets/images/treasure_hunt/q6_island_palau.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Palau.jpg',
       options: ['Palau', 'Guam', 'Micronesia'],
-      isTypingQuestion: true,
+      isTypingQuestion: false,
       explanation:
           'Ang bansang Palau ay matatagpuan sa Karagatang Pasipiko sa timog-silangan ng Mindanao.',
     ),
@@ -147,8 +147,8 @@ class TreasureHuntRegistry {
           'Ang kayamanan ay matatagpuan sa bansang nasa kanluran ng Pilipinas. Saang bansang ito makikita?',
       correctAnswer: 'Thailand',
       acceptableAnswers: ['thailand', 'taylandiya', 'siam'],
-      imageAsset: 'assets/images/treasure_hunt/q7_forest_thailand.png',
-      options: ['Myanmar', 'Thailand', 'Singapore'],
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Thailand.jpg',
+      options: ['Taiwan', 'Thailand', 'Brunei'],
       isTypingQuestion: false,
       explanation:
           'Ang Thailand ay matatagpuan sa kanluran ng Pilipinas sa Indochina Peninsula sa Timog-Silangang Asya.',
@@ -158,7 +158,7 @@ class TreasureHuntRegistry {
     TreasureHuntQuestion(
       id: 8,
       prompt:
-          'Ang kayamanan ay nakatago sa malaking karagatang nasa silangan ng Pilipinas. Saan ito matatagpuan?',
+          'Ang kayamanan ay nakatago sa malaking karagatan sa silangan ng Pilipinas. Saang karagatan ito matatagpuan?',
       correctAnswer: 'Pacific Ocean',
       acceptableAnswers: [
         'pacific ocean',
@@ -166,9 +166,9 @@ class TreasureHuntRegistry {
         'karagatang pasipiko',
         'pasipiko'
       ],
-      imageAsset: 'assets/images/treasure_hunt/q8_ocean_pacific.png',
+      imageAsset: 'assets/images/HanapinAngKayamananAssets/Pacific Ocean.jpg',
       options: ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean'],
-      isTypingQuestion: true,
+      isTypingQuestion: false,
       explanation:
           'Ang Pacific Ocean ang pinakamalaking karagatan sa buong daigdig na sumasakop sa silangang bahagi ng Pilipinas.',
     ),
@@ -177,14 +177,15 @@ class TreasureHuntRegistry {
     TreasureHuntQuestion(
       id: 9,
       prompt:
-          'Ang kayamanan ay nasa barkong naglalayag sa kanluran na karagatan ng Pilipinas. Saang dagat ito matatagpuan?',
+          'Ang kayamanan ay nasa barkong naglalayag sa kanlurang dagat ng Pilipinas. Saang dagat ito matatagpuan?',
       correctAnswer: 'West Philippine Sea',
       acceptableAnswers: [
         'west philippine sea',
         'dagat kanlurang pilipinas',
         'wps'
       ],
-      imageAsset: 'assets/images/treasure_hunt/q9_ship_wps.png',
+      imageAsset:
+          'assets/images/HanapinAngKayamananAssets/West Philippine Sea.jpg',
       options: ['West Philippine Sea', 'Celebes Sea', 'Indian Ocean'],
       isTypingQuestion: false,
       explanation:
@@ -195,12 +196,13 @@ class TreasureHuntRegistry {
     TreasureHuntQuestion(
       id: 10,
       prompt:
-          'Ang kayamanan ay nakatago sa karagatan sa barkong nasa hilagang-silangan ng Pilipinas. Saang karagatan ito matatagpuan?',
+          'Ang kayamanan ay nakatago sa barkong nasa hilagang-silangan ng Pilipinas. Saang dagat ito matatagpuan?',
       correctAnswer: 'Philippine Sea',
       acceptableAnswers: ['philippine sea', 'dagat pilipinas'],
-      imageAsset: 'assets/images/treasure_hunt/q10_helm_phsea.png',
+      imageAsset:
+          'assets/images/HanapinAngKayamananAssets/Philippine Sea.jpg',
       options: ['Sulu Sea', 'Philippine Sea', 'Celebes Sea'],
-      isTypingQuestion: true,
+      isTypingQuestion: false,
       explanation:
           'Ang Philippine Sea ay bahagi ng Karagatang Pasipiko na nasa silangan at hilagang-silangan ng Pilipinas.',
     ),

@@ -17,7 +17,10 @@ void main() {
         expect(q.id, inInclusiveRange(1, 10));
         expect(q.prompt.isNotEmpty, isTrue);
         expect(q.correctAnswer.isNotEmpty, isTrue);
-        expect(q.imageAsset.startsWith('assets/images/treasure_hunt/'), isTrue);
+        expect(
+            q.imageAsset.startsWith('assets/images/HanapinAngKayamananAssets/'),
+            isTrue);
+        expect(q.isTypingQuestion, isFalse);
         expect(q.options.length, greaterThanOrEqualTo(3));
         expect(q.options.contains(q.correctAnswer), isTrue);
         expect(q.explanation.isNotEmpty, isTrue);
@@ -195,9 +198,10 @@ void main() {
       await tester.tap(nextBtn);
       await tester.pumpAndSettle();
 
-      // Now at question 2 (which supports typing!)
+      // Now at question 2 (which is multiple choice only!)
       expect(find.textContaining('KATANUNGAN 2 NG 10'), findsOneWidget);
-      expect(find.text('I-type ang sagot dito...'), findsOneWidget);
+      expect(find.textContaining('Sulu Sea'), findsOneWidget);
+      expect(find.text('I-type ang sagot dito...'), findsNothing);
     });
   });
 
