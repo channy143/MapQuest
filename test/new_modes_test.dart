@@ -59,6 +59,43 @@ void main() {
       // Verified: navigated back to Mode Selection screen
       expect(find.text('PAGPILI'), findsOneWidget);
     });
+
+    testWidgets('Bashi Channel pin exists in Mode ng Pagkatuto with description and fun fact',
+        (WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: GameScreen(selectedMode: 'mode ng pagkatuto'),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 1000));
+
+      // Dismiss welcome modal
+      await tester.tap(find.byWidgetPredicate(
+        (w) => w is Text && (w.data == 'MAGSIMULA' || w.data == 'MAGPATULOY'),
+      ));
+      await tester.pump(const Duration(milliseconds: 800));
+      await tester.pump();
+
+      // Tap on Bashi Channel pin
+      final bashiPin = find.byKey(const ValueKey('pin_bashi_channel'));
+      expect(bashiPin, findsOneWidget);
+      await tester.tap(bashiPin);
+      await tester.pump(const Duration(milliseconds: 800));
+
+      // Check location card title, description, and fun fact
+      expect(find.text('Bashi Channel'), findsNWidgets(2));
+      expect(find.textContaining('naghihiwalay sa Batanes at sa karatig-bansang Taiwan'), findsOneWidget);
+      expect(find.textContaining('submarine telecommunication cables'), findsOneWidget);
+    });
   });
 
   group('Mode Selection Screen Navigation', () {
@@ -282,7 +319,7 @@ void main() {
 
       // Coordinate quest panel at bottom is visible
       expect(find.text('COORDINATE QUEST'), findsWidgets);
-      expect(find.textContaining('0 / 22 Nabuksan'), findsOneWidget);
+      expect(find.textContaining('0 / 23 Nabuksan'), findsOneWidget);
 
       // Coordinates text is displayed (first locked location is Luzon: 16.6° H Latitud, 121.3° S Longhitud)
       expect(find.text('16.6° H Latitud, 121.3° S Longhitud'), findsOneWidget);
@@ -304,8 +341,8 @@ void main() {
       await tester.tap(closeBtn);
       await tester.pump(const Duration(milliseconds: 400));
 
-      // Progress counter increases to 1 / 22
-      expect(find.textContaining('1 / 22 Nabuksan'), findsOneWidget);
+      // Progress counter increases to 1 / 23
+      expect(find.textContaining('1 / 23 Nabuksan'), findsOneWidget);
 
       // Verified persistence in storage
       final unlockedInStorage = await CoordinateQuestStorage.getUnlockedLocations();

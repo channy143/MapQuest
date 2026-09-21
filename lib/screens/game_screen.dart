@@ -436,6 +436,20 @@ class _GameScreenState extends State<GameScreen>
 
     // --- Mga Nakapaligid na Anyong Tubig ---
     MapLocation(
+      id: 'bashi_channel',
+      title: 'Bashi Channel',
+      category: 'ANYONG TUBIG SA HILAGA (INSULAR)',
+      geoCategory: GeoCategory.insular,
+      description:
+          'Ang Bashi Channel (Kipot ng Bashi) ay isang mahalagang anyong tubig na matatagpuan sa Hilaga ng Pilipinas. Ito ang naghihiwalay sa Batanes at sa karatig-bansang Taiwan, at nagdurugtong sa Dagat Kanlurang Pilipinas at Karagatang Pasipiko.',
+      funFact:
+          'Alam mo ba? Ang Bashi Channel ay isang napakahalagang daanan ng mga barko at sa ilalim nito ay may mga submarine telecommunication cables na nagdadala ng internet connection sa iba\'t ibang bansa sa Asya!',
+      coordinates: '21.3° H Latitud, 121.5° S Longhitud',
+      normalizedX: 0.630,
+      normalizedY: 0.315,
+      color: Color(0xFF0288D1),
+    ),
+    MapLocation(
       id: 'pacific_ocean',
       title: 'Karagatang Pasipiko',
       category: 'ANYONG TUBIG SA SILANGAN (INSULAR)',
